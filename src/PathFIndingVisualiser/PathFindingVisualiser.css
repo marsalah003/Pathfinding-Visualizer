@@ -1,0 +1,11 @@
+.grid {
+  font-size: 0px;
+  text-align: center;
+  margin: auto;
+  padding: 10px;
+}
+.navbar {
+  padding: 10px;
+  width: auto;
+  height: 50px;
+}
