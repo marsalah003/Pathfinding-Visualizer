@@ -36,6 +36,9 @@ export default function PathFindingVisualiser({
         distance: Infinity,
         totalDistance: Infinity,
         isVisited: false,
+        isWall: false,
+        isWeighted: false,
+        isWallPreviously: false,
 
         previousNode: null,
         isAnimateSecondPath: false,
