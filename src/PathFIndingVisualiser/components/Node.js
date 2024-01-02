@@ -31,10 +31,6 @@ export default function Node({
   const styles = {
     backgroundColor: isWall
       ? "#008b8b"
-      : isStart
-      ? "green"
-      : isEnd
-      ? "red"
       : isAnimate
       ? "yellow"
       : isOnPath
@@ -88,19 +84,25 @@ export default function Node({
         <img
           className="weight"
           alt="weight square"
-          src={require("./weight-icon.jpg")}
+          src={require("./icons/weight-icon.jpg")}
         />
       )}
       {isBomb && (
         <img
           className="bomb"
-          alt="weight square"
-          src={require("./bomb2.png")}
+          alt="target square"
+          src={require("./icons/target.png")}
         />
       )}
       {isHeadOfPath && (
-        <img className="head" alt="head of path" src={require("./star.png")} />
+        <img
+          className="head"
+          alt="head of path"
+          src={require("./icons/star.png")}
+        />
       )}
+      {isEnd && <img alt="end" src={require("./icons/end.png")} />}
+      {isStart && <img alt="start" src={require("./icons/arrow-right.png")} />}
     </div>
   );
 }

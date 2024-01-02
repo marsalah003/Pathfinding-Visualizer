@@ -1,10 +1,37 @@
 .App {
   text-align: center;
 }
+.tute-img {
+  margin: auto;
+  justify-content: center;
+  display: flex;
+  width: 70%;
+  height: 70%;
+}
+.button-img {
+  width: 20%;
+  height: 20%;
+  margin: auto;
+  padding: 10px;
+  justify-content: center;
+}
+.body {
+  height: 65vh;
+}
+.navbar-demo {
+  width: 90%;
+  height: 90%;
+  justify-content: center;
+  margin: auto;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+.close {
+  position: absolute;
+  right: 650px;
 }
 
 .App-header {

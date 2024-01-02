@@ -1,5 +1,5 @@
 const GRID_ROW_LENGTH = 23;
-const GRID_COL_LENGTH = 52;
+const GRID_COL_LENGTH = 66;
 const grid = [];
 for (let row = 0; row < GRID_ROW_LENGTH; row++) {
   const currentRow = [];
@@ -32,7 +32,7 @@ for (let row = 0; row < GRID_ROW_LENGTH; row++) {
   }
   grid.push(currentRow);
 }
-grid[11][20].isStart = true;
-grid[11][30].isEnd = true;
+grid[11][30].isStart = true;
+grid[11][35].isEnd = true;
 
 export default grid;

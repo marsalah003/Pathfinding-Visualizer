@@ -61,13 +61,11 @@ export default function bidirectionalGreedySearch(grid, start, end) {
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodesStart)) {
         unvisitedNodesStart.unshift(neighbour);
         neighbour.distance = distance;
-        neighbour.totalDistance =
-          manhattenDistance(neighbour, finishNode) + distance;
+        neighbour.totalDistance = manhattenDistance(neighbour, finishNode);
         neighbour.previousNode = closestNodeStart;
       } else if (distance < neighbour.distance) {
         neighbour.distance = distance;
-        neighbour.totalDistance =
-          manhattenDistance(neighbour, finishNode) + distance;
+        neighbour.totalDistance = manhattenDistance(neighbour, finishNode);
         neighbour.previousNode = closestNodeStart;
       }
     }
@@ -94,13 +92,11 @@ export default function bidirectionalGreedySearch(grid, start, end) {
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodesFinish)) {
         unvisitedNodesFinish.unshift(neighbour);
         neighbour.distance = distance;
-        neighbour.totalDistance =
-          manhattenDistance(neighbour, startNode) + distance;
+        neighbour.totalDistance = manhattenDistance(neighbour, startNode);
         neighbour.previousNode = closestNodeFinish;
       } else if (distance < neighbour.distance) {
         neighbour.distance = distance;
-        neighbour.totalDistance =
-          manhattenDistance(neighbour, startNode) + distance;
+        neighbour.totalDistance = manhattenDistance(neighbour, startNode);
         neighbour.previousNode = closestNodeFinish;
       }
     }

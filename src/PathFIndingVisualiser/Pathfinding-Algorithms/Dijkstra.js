@@ -78,5 +78,6 @@ export function getNodesInShortestPathOrder(finishNode, startNode) {
     currentNode = currentNode.previousNode;
     if (currentNode === null) return nodesInShortestPathOrder;
   }
+  nodesInShortestPathOrder.unshift(startNode);
   return nodesInShortestPathOrder.map((item) => item.pos);
 }

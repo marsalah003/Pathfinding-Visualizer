@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./PathFindingVisualiser.css";
 import Node from "./components/Node.js";
 
@@ -25,7 +25,7 @@ export default function PathFindingVisualiser({
     buttonClicked: "",
     isMousePressed: false,
   });
-
+  const gridRef = useRef(null);
   const clearEverything = (grid) => {
     return grid.map((items) =>
       items.map((item) => ({
@@ -49,17 +49,7 @@ export default function PathFindingVisualiser({
       }))
     );
   };
-  const clearWallsAndWeights = (grid) => {
-    return grid.map((items) =>
-      items.map((item) => ({
-        ...item,
-        isWeighted: false,
-        isWall: false,
-        isAnimate: false,
-        isAnimateInstantly: false,
-      }))
-    );
-  };
+
   const clearPath = (grid) => {
     return grid.map((items) =>
       items.map((item) => ({
@@ -71,6 +61,14 @@ export default function PathFindingVisualiser({
         isInstantPath: false,
         isAnimate: false,
         isHeadOfPath: false,
+
+        distance: Infinity,
+        totalDistance: Infinity,
+        isVisited: false,
+
+        isWallPreviously: false,
+
+        previousNode: null,
       }))
     );
   };
@@ -113,7 +111,7 @@ export default function PathFindingVisualiser({
             col === node.col &&
             (property === "isAnimateInstantly" ||
               property === "isAnimateSecondPathInstantly")
-          )
+          ) {
             return {
               ...item,
               [property]: true,
@@ -121,7 +119,7 @@ export default function PathFindingVisualiser({
               isOnPath: false,
               isInstantPath: false,
             };
-          else {
+          } else {
             return item;
           }
         })
@@ -211,8 +209,8 @@ export default function PathFindingVisualiser({
       if (
         (pos.row === startPos.row && pos.col === startPos.col) ||
         (pos.row === endPos.row && pos.col === endPos.col) ||
-        (bombPos && pos.row === bombPos.row && pos.col === bombPos.col) ||
-        grid[pos.row][pos.col].isWeighted
+        (bombPos && pos.row === bombPos.row && pos.col === bombPos.col)
+        // grid[pos.row][pos.col].isWeighted
       )
         return;
 
@@ -271,14 +269,16 @@ export default function PathFindingVisualiser({
           }))
         );
         const pathFindingAlgo = getPathFindingAlgo(state.algoPicked);
+        let toBomb,
+          toEnd,
+          pathToBomb,
+          pathToEnd,
+          nodesVisitedToBomb,
+          nodesVisitedToEnd,
+          nodesVisitedInOrder,
+          path;
         if (getNodeWithProperty("isBomb")) {
           let bombNodePos = gridCopy[bombPos.row][bombPos.col].pos;
-          let toBomb,
-            toEnd,
-            pathToBomb,
-            pathToEnd,
-            nodesVisitedToBomb,
-            nodesVisitedToEnd;
           switch (pathFinder.mousePressedOn) {
             case "start":
               toBomb = pathFindingAlgo(
@@ -286,12 +286,12 @@ export default function PathFindingVisualiser({
                 gridCopy[pos.row][pos.col].pos,
                 bombNodePos
               );
-              gridCopy = clearEverything(gridCopy);
+              gridCopy = clearPath(gridCopy);
               nodesVisitedToBomb = toBomb.nodesVisitedInOrder;
               pathToBomb = toBomb.path;
 
               toEnd = pathFindingAlgo(gridCopy, bombNodePos, endNodePos);
-              gridCopy = clearEverything(gridCopy);
+              gridCopy = clearPath(gridCopy);
               nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
               pathToEnd = toEnd.path;
               break;
@@ -300,14 +300,14 @@ export default function PathFindingVisualiser({
               nodesVisitedToBomb = toBomb.nodesVisitedInOrder;
               pathToBomb = toBomb.path;
 
-              gridCopy = clearEverything(gridCopy);
+              gridCopy = clearPath(gridCopy);
 
               toEnd = pathFindingAlgo(
                 gridCopy,
                 bombNodePos,
                 gridCopy[pos.row][pos.col].pos
               );
-              gridCopy = clearEverything(gridCopy);
+              gridCopy = clearPath(gridCopy);
               nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
               pathToEnd = toEnd.path;
               break;
@@ -320,10 +320,10 @@ export default function PathFindingVisualiser({
               nodesVisitedToBomb = toBomb.nodesVisitedInOrder;
               pathToBomb = toBomb.path;
 
-              gridCopy = clearEverything(gridCopy);
+              gridCopy = clearPath(gridCopy);
 
               toEnd = pathFindingAlgo(gridCopy, bombNodePos, endNodePos);
-              gridCopy = clearEverything(gridCopy);
+              gridCopy = clearPath(gridCopy);
               nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
               pathToEnd = toEnd.path;
 
@@ -344,6 +344,15 @@ export default function PathFindingVisualiser({
           );
           newGrid = animateInstantly(pathToBomb, "isInstantPath", newGrid);
           newGrid = animateInstantly(pathToEnd, "isInstantPath", newGrid);
+          let scannedNodes =
+            nodesVisitedToBomb.length + nodesVisitedToEnd.length;
+          let pathLength = pathToBomb.length + pathToEnd.length;
+          changeHandler((prev) => ({
+            ...prev,
+            grid: newGrid,
+            scannedNodes,
+            pathLength,
+          }));
         } else {
           let ret = pathFindingAlgo(
             gridCopy,
@@ -354,8 +363,8 @@ export default function PathFindingVisualiser({
               ? endNodePos
               : gridCopy[pos.row][pos.col].pos
           );
-          const path = ret.path;
-          const nodesVisitedInOrder = ret.nodesVisitedInOrder;
+          path = ret.path;
+          nodesVisitedInOrder = ret.nodesVisitedInOrder;
 
           newGrid = animateInstantly(
             nodesVisitedInOrder,
@@ -363,9 +372,14 @@ export default function PathFindingVisualiser({
             newGrid
           );
           newGrid = animateInstantly(path, "isInstantPath", newGrid);
+          console.log(path);
+          changeHandler((prev) => ({
+            ...prev,
+            grid: newGrid,
+            pathLength: path.length,
+            scannedNodes: nodesVisitedInOrder.length,
+          }));
         }
-
-        changeHandler((prev) => ({ ...prev, grid: newGrid }));
       }
       pathFinder.mousePressedOn === ""
         ? changeSquare(squareProperty, pos)
@@ -435,17 +449,17 @@ export default function PathFindingVisualiser({
       for (var i = 0; i < prev.grid.length; i++) {
         newArray[i] = prev.grid[i].slice();
       }
-
+      const newGrid = newArray.map((items) =>
+        items.map((item) => {
+          const { row, col } = item.pos;
+          return row === pos.row && col === pos.col
+            ? { ...item, [property]: !item[property] }
+            : item;
+        })
+      );
       return {
         ...prev,
-        grid: newArray.map((items) =>
-          items.map((item) => {
-            const { row, col } = item.pos;
-            return row === pos.row && col === pos.col
-              ? { ...item, [property]: !item[property] }
-              : item;
-          })
-        ),
+        grid: newGrid,
       };
     });
   };
@@ -580,7 +594,6 @@ export default function PathFindingVisualiser({
           isAnimationInProgress: true,
         }));
         const mazeAlgo = getMazeAlgo(state.mazePicked);
-
         let maze = mazeAlgo(
           state.grid,
           getNodeWithProperty("isStart").pos,
@@ -604,6 +617,8 @@ export default function PathFindingVisualiser({
           ...prev,
           isAnimationInProgress: true,
           isAnimationFinished: false,
+          scannedNodes: 0,
+          pathLength: 0,
         }));
         const stateAlgo = getPathFindingAlgo(state.algoPicked);
         const newGrid = state.grid.map((items) =>
@@ -653,6 +668,9 @@ export default function PathFindingVisualiser({
                 isAnimationInProgress: false,
                 isAnimationFinished: true,
                 isVisualiseAttempted: false,
+                scannedNodes:
+                  nodesVisitedToBomb.length + nodesVisitedToEnd.length,
+                pathLength: pathToBomb.length + pathToEnd.length,
               }));
             });
         } else {
@@ -668,6 +686,8 @@ export default function PathFindingVisualiser({
                 isAnimationInProgress: false,
                 isAnimationFinished: true,
                 isVisualiseAttempted: false,
+                scannedNodes: nodesVisitedInOrder.length,
+                pathLength: path.length,
               }));
             });
           });
@@ -716,5 +736,10 @@ export default function PathFindingVisualiser({
       ))}
     </div>
   ));
-  return <div className="grid"> {grid}</div>;
+  return (
+    <div ref={gridRef} className="grid">
+      {" "}
+      {grid}
+    </div>
+  );
 }

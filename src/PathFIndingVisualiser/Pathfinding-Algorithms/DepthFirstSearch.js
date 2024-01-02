@@ -3,6 +3,7 @@ export default function DepthFirstSearch(grid, src, dest) {
     items.map((item) => ({ row: -1, col: -1 }))
   );
   const nodesVisitedInOrder = [];
+  nodesVisitedInOrder.push(src);
 
   visitedGrid[src.row][src.col] = { row: src.row, col: src.col };
 
@@ -14,13 +15,14 @@ export default function DepthFirstSearch(grid, src, dest) {
 
       v = visitedGrid[v.row][v.col];
     }
+    path.unshift(src);
   }
   return { path, nodesVisitedInOrder };
 }
 const DFSPathCheck = (grid, src, dest, nodesVisitedInOrder, visitedGrid) => {
   const neighbours = [];
   if (
-    src.col - 1 <= 51 &&
+    src.col - 1 <= 65 &&
     src.col - 1 >= 0 &&
     !grid[src.row][src.col - 1].isWall
   ) {
@@ -34,7 +36,7 @@ const DFSPathCheck = (grid, src, dest, nodesVisitedInOrder, visitedGrid) => {
     neighbours.push({ row: src.row - 1, col: src.col });
   }
   if (
-    src.col + 1 <= 51 &&
+    src.col + 1 <= 65 &&
     src.col + 1 >= 0 &&
     !grid[src.row][src.col + 1].isWall
   ) {

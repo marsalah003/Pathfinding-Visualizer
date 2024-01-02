@@ -20,6 +20,7 @@ export default function NavBar({
   clearPath,
   removeBomb,
   addBomb,
+  showTutorial,
 }) {
   return (
     <Navbar
@@ -41,7 +42,9 @@ export default function NavBar({
                     ? null
                     : changeHandler((prev) => ({
                         ...prev,
-                        algoPicked: eventKey.target.name,
+                        algoPicked:
+                          eventKey.target.name ||
+                          eventKey.target.parentElement.name,
                       }))
                 }
               >
@@ -76,10 +79,16 @@ export default function NavBar({
                     as="button"
                     name="Dijkstra's algorithm"
                   >
-                    Dijkstra's algorithm <Badge bg="secondary">Weighted</Badge>
+                    Dijkstra's algorithm{" "}
+                    <Badge pill bg="secondary">
+                      Weighted
+                    </Badge>
                   </Dropdown.Item>
                   <Dropdown.Item href="#/action-4" as="button" name="A*">
-                    A* <Badge bg="secondary">Weighted</Badge>
+                    A*{" "}
+                    <Badge pill bg="secondary">
+                      Weighted
+                    </Badge>
                   </Dropdown.Item>
                   <Dropdown.Item
                     href="#/action-4"
@@ -94,10 +103,15 @@ export default function NavBar({
                     name="Greedy Best First Search"
                   >
                     Greedy Best First Search{" "}
-                    <Badge bg="secondary">Weighted</Badge>
                   </Dropdown.Item>
                   <Dropdown.Divider />
-                  <Dropdown.Item href="#/action-4">Random Walk</Dropdown.Item>
+                  <Dropdown.Item
+                    href="#/action-4"
+                    as="button"
+                    name="Random Walk"
+                  >
+                    Random Walk
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
               <Dropdown
@@ -224,7 +238,11 @@ export default function NavBar({
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-              <Dropdown as={ButtonGroup} variant="secondary">
+              <Dropdown
+                as={ButtonGroup}
+                variant="secondary"
+                autoClose="outside"
+              >
                 <Dropdown.Toggle
                   id="dropdown-button-dark-example1"
                   variant="secondary"
@@ -290,6 +308,7 @@ export default function NavBar({
             </ButtonGroup>
             <Button
               variant="primary"
+              onClick={showTutorial}
               className="button"
               size="sm"
               disabled={state.isAnimationInProgress ? "disabled" : undefined}
