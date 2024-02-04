@@ -1,15 +1,18 @@
-export default function AStar(grid, startNode, finishNode) {
-  let unvisitedNodes = []; // Open list.
-  let nodesVisitedInOrder = []; // Closed list.
-  const start = grid[startNode.row][startNode.col];
-  const end = grid[finishNode.row][finishNode.col];
+import { gridI, nodeI, posI } from "../grid";
+import { manhattenDistance } from "./utils";
+
+const AStar = (grid: gridI, src: posI, dest: posI) => {
+  const unvisitedNodes = []; // Open list.
+  const nodesVisitedInOrder = []; // Closed list.
+  const start = grid[src.row][src.col];
+  const end = grid[dest.row][dest.col];
   start.distance = 0;
   unvisitedNodes.push(start);
 
   while (unvisitedNodes.length) {
     unvisitedNodes.sort((a, b) => a.totalDistance - b.totalDistance);
 
-    let closestNode = unvisitedNodes.shift();
+    const closestNode = unvisitedNodes.shift() as nodeI;
     if (
       closestNode.pos.row === end.pos.row &&
       closestNode.pos.col === end.pos.col
@@ -23,9 +26,9 @@ export default function AStar(grid, startNode, finishNode) {
     closestNode.isVisited = true;
     nodesVisitedInOrder.push(closestNode);
 
-    let neighbours = getNeighbours(closestNode, grid);
-    for (let neighbour of neighbours) {
-      let distance = closestNode.distance + (neighbour.isWeighted ? 15 : 1); // in other words: distance(next, neighbour)
+    const neighbours = getNeighbours(closestNode, grid);
+    for (const neighbour of neighbours) {
+      const distance = closestNode.distance + (neighbour.isWeighted ? 15 : 1); // in other words: distance(next, neighbour)
 
       // f(n) = g(n) + h(n).
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes)) {
@@ -44,11 +47,11 @@ export default function AStar(grid, startNode, finishNode) {
     path: [],
     nodesVisitedInOrder: nodesVisitedInOrder.map((item) => item.pos),
   };
-}
+};
 
-function getNeighbours(node, grid) {
-  let neighbours = [];
-  let { row, col } = node.pos;
+const getNeighbours = (node: nodeI, grid: gridI) => {
+  const neighbours = [];
+  const { row, col } = node.pos;
 
   if (col !== grid[0].length - 1) neighbours.push(grid[row][col + 1]);
   if (row !== grid.length - 1) neighbours.push(grid[row + 1][col]);
@@ -58,10 +61,13 @@ function getNeighbours(node, grid) {
   return neighbours.filter(
     (neighbour) => !neighbour.isWall && !neighbour.isVisited
   );
-}
+};
 
-function neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes) {
-  for (let node of unvisitedNodes) {
+const neighbourNotInUnvisitedNodes = (
+  neighbour: nodeI,
+  unvisitedNodes: nodeI[]
+) => {
+  for (const node of unvisitedNodes) {
     if (
       node.pos.row === neighbour.pos.row &&
       node.pos.col === neighbour.pos.col
@@ -70,22 +76,18 @@ function neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes) {
   }
 
   return true;
-}
+};
 
-function manhattenDistance(node, end) {
-  let x = Math.abs(node.pos.row - end.pos.row);
-  let y = Math.abs(node.pos.col - end.pos.col);
-  return x + y;
-}
-
-export function getOptPathNodes_AStar(end) {
-  let nodesInShortestPathOrder = [];
+const getOptPathNodes_AStar = (end: nodeI) => {
+  const nodesInShortestPathOrder = [];
   let currentNode = end;
   nodesInShortestPathOrder.push(end);
   while (currentNode !== null) {
     nodesInShortestPathOrder.unshift(currentNode);
-    currentNode = currentNode.previousNode;
+    currentNode = currentNode.previousNode as nodeI;
   }
 
   return nodesInShortestPathOrder.map((item) => item.pos);
-}
+};
+
+export default AStar;

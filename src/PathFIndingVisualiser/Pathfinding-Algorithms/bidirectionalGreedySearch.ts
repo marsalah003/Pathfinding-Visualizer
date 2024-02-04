@@ -1,9 +1,12 @@
+import { gridI, nodeI, posI } from "../grid";
+import { manhattenDistance, isNeighbour, getNeighbours } from "./utils";
+
 // Courtesy of rohithaug, Github name: rohithaug
-export default function bidirectionalGreedySearch(grid, start, end) {
-  let unvisitedNodesStart = [];
-  let visitedNodesInOrderStart = [];
-  let unvisitedNodesFinish = [];
-  let visitedNodesInOrderFinish = [];
+const bidirectionalGreedySearch = (grid: gridI, start: posI, end: posI) => {
+  const unvisitedNodesStart: nodeI[] = [];
+  const visitedNodesInOrderStart: nodeI[] = [];
+  const unvisitedNodesFinish: nodeI[] = [];
+  const visitedNodesInOrderFinish: nodeI[] = [];
   const startNode = grid[start.row][start.col];
   const finishNode = grid[end.row][end.col];
   startNode.distance = 0;
@@ -17,8 +20,8 @@ export default function bidirectionalGreedySearch(grid, start, end) {
   ) {
     unvisitedNodesStart.sort((a, b) => a.totalDistance - b.totalDistance);
     unvisitedNodesFinish.sort((a, b) => a.totalDistance - b.totalDistance);
-    let closestNodeStart = unvisitedNodesStart.shift();
-    let closestNodeFinish = unvisitedNodesFinish.shift();
+    const closestNodeStart = unvisitedNodesStart.shift() as nodeI;
+    const closestNodeFinish = unvisitedNodesFinish.shift() as nodeI;
 
     closestNodeStart.isVisited = true;
     closestNodeFinish.isVisited = true;
@@ -39,7 +42,7 @@ export default function bidirectionalGreedySearch(grid, start, end) {
 
     //Start side search
     let neighbours = getNeighbours(closestNodeStart, grid);
-    for (let neighbour of neighbours) {
+    for (const neighbour of neighbours) {
       if (!neighbourNotInUnvisitedNodes(neighbour, unvisitedNodesFinish)) {
         visitedNodesInOrderStart.push(closestNodeStart);
         visitedNodesInOrderFinish.push(neighbour);
@@ -56,7 +59,7 @@ export default function bidirectionalGreedySearch(grid, start, end) {
           ),
         };
       }
-      let distance = closestNodeStart.distance + 1;
+      const distance = closestNodeStart.distance + 1;
       //f(n) = h(n)
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodesStart)) {
         unvisitedNodesStart.unshift(neighbour);
@@ -72,7 +75,7 @@ export default function bidirectionalGreedySearch(grid, start, end) {
 
     //Finish side search
     neighbours = getNeighbours(closestNodeFinish, grid);
-    for (let neighbour of neighbours) {
+    for (const neighbour of neighbours) {
       if (!neighbourNotInUnvisitedNodes(neighbour, unvisitedNodesStart)) {
         visitedNodesInOrderStart.push(closestNodeFinish);
         visitedNodesInOrderStart.push(neighbour);
@@ -87,7 +90,7 @@ export default function bidirectionalGreedySearch(grid, start, end) {
           ),
         };
       }
-      let distance = closestNodeFinish.distance + 1;
+      const distance = closestNodeFinish.distance + 1;
       //f(n) = h(n)
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodesFinish)) {
         unvisitedNodesFinish.unshift(neighbour);
@@ -111,40 +114,13 @@ export default function bidirectionalGreedySearch(grid, start, end) {
       visitedNodesInOrderFinish
     ),
   };
-}
+};
 
-function isNeighbour(closestNodeStart, closestNodeFinish) {
-  let rowStart = closestNodeStart.pos.row;
-  let colStart = closestNodeStart.pos.col;
-  let rowFinish = closestNodeFinish.pos.row;
-  let colFinish = closestNodeFinish.pos.col;
-  if (rowFinish === rowStart - 1 && colFinish === colStart) return true;
-  if (rowFinish === rowStart && colFinish === colStart + 1) return true;
-  if (rowFinish === rowStart + 1 && colFinish === colStart) return true;
-  if (rowFinish === rowStart && colFinish === colStart - 1) return true;
-  return false;
-}
-
-function getNeighbours(node, grid) {
-  let neighbours = [];
-  let { row, col } = node.pos;
-  if (row !== 0) neighbours.push(grid[row - 1][col]);
-  if (col !== grid[0].length - 1) neighbours.push(grid[row][col + 1]);
-  if (row !== grid.length - 1) neighbours.push(grid[row + 1][col]);
-  if (col !== 0) neighbours.push(grid[row][col - 1]);
-  return neighbours.filter(
-    (neighbour) => !neighbour.isWall && !neighbour.isVisited
-  );
-}
-
-function manhattenDistance(nodeA, nodeB) {
-  let x = Math.abs(nodeA.pos.row - nodeB.pos.row);
-  let y = Math.abs(nodeA.pos.col - nodeB.pos.col);
-  return x + y;
-}
-
-function neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes) {
-  for (let node of unvisitedNodes) {
+const neighbourNotInUnvisitedNodes = (
+  neighbour: nodeI,
+  unvisitedNodes: nodeI[]
+) => {
+  for (const node of unvisitedNodes) {
     if (
       node.pos.row === neighbour.pos.row &&
       node.pos.col === neighbour.pos.col
@@ -153,36 +129,43 @@ function neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes) {
     }
   }
   return true;
-}
+};
 
-export function getNodesInShortestPathOrderBidirectionalGreedySearch(
-  nodeA,
-  nodeB
-) {
-  let nodesInShortestPathOrder = [];
+const getNodesInShortestPathOrderBidirectionalGreedySearch = (
+  nodeA: nodeI,
+  nodeB: nodeI
+) => {
+  const nodesInShortestPathOrder: nodeI[] = [];
   let currentNode = nodeB;
   while (currentNode !== null) {
     nodesInShortestPathOrder.push(currentNode);
-    currentNode = currentNode.previousNode;
+    currentNode = currentNode.previousNode as nodeI;
   }
   currentNode = nodeA;
   while (currentNode !== null) {
     nodesInShortestPathOrder.unshift(currentNode);
-    currentNode = currentNode.previousNode;
+    currentNode = currentNode.previousNode as nodeI;
   }
   return nodesInShortestPathOrder.map((item) => item.pos);
-}
-const getReturn = (visitedNodesInOrderStart, visitedNodesInOrderFinish) => {
-  let minArrayLength = Math.min(
+};
+const getReturn = (
+  visitedNodesInOrderStart: nodeI[],
+  visitedNodesInOrderFinish: nodeI[]
+) => {
+  const minArrayLength = Math.min(
     visitedNodesInOrderStart.length,
     visitedNodesInOrderFinish.length
   );
-  let result = visitedNodesInOrderStart
+  const result = visitedNodesInOrderStart
     .slice(0, minArrayLength)
-    .flatMap((element, index) => [element, visitedNodesInOrderFinish[index]])
+    .flatMap((element: nodeI, index: number) => [
+      element,
+      visitedNodesInOrderFinish[index],
+    ])
     .concat(
       ...visitedNodesInOrderStart.slice(minArrayLength),
       ...visitedNodesInOrderFinish.slice(minArrayLength)
     );
-  return result.map((item) => item.pos);
+  return result.map((item: nodeI) => item.pos);
 };
+export default bidirectionalGreedySearch;

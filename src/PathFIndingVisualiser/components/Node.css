@@ -18,7 +18,20 @@ img {
   max-height: 100%;
   -webkit-user-drag: none;
 }
-.bomb{
+.weight {
+  animation-name: weightAnimation;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+  /* background-size: contain;
+  background-position: center; */
+  -webkit-user-drag: none;
+}
+.bomb {
   cursor: pointer;
 }
 
@@ -107,8 +120,7 @@ img {
   }
 
   100% {
-    transform: scale(1);
-    background-color: yellow;
+    background-color: rgb(255, 254, 106);
   }
 }
 
@@ -166,7 +178,7 @@ img {
   background-color: rgba(178, 67, 255, 0.75);
 }
 .instantPath {
-  background-color: yellow !important;
+  background-color: yellow;
 }
 .wall {
   animation-name: wallAnimation;
@@ -177,7 +189,7 @@ img {
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
-  outline-width: 0.0001px;
+  outline-width: 0px;
   background-size: contain;
   background-position: center;
   -webkit-user-drag: none;

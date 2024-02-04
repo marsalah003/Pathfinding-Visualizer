@@ -1,7 +1,31 @@
 import React from "react";
 import "./Node.css";
-
-export default function Node({
+import { posI, gridI } from "../grid";
+interface propsI {
+  pos: posI;
+  isStart: boolean;
+  isEnd: boolean;
+  isVisited: boolean;
+  isWall: boolean;
+  isOnPath: boolean;
+  isAnimate: boolean;
+  onClick: (event: React.MouseEvent<HTMLElement>, pos: posI) => void;
+  onMouseDown: (event: React.MouseEvent<HTMLElement>, pos: posI) => void;
+  onMouseEnter: (pos: posI, grid: gridI) => void;
+  onMouseUp: () => void;
+  grid: gridI;
+  isCurrentNode: boolean;
+  isWeighted: boolean;
+  isBomb: boolean;
+  isVisitedPreviously: boolean;
+  isAnimateSecondPath: boolean;
+  isHeadOfPath: boolean;
+  isInstantPath: boolean;
+  isYellowPath: boolean;
+  isAnimateInstantly: boolean;
+  isAnimateSecondPathInstantly: boolean;
+}
+const Node = ({
   pos,
   isStart,
   isEnd,
@@ -12,7 +36,6 @@ export default function Node({
   onMouseDown,
   onMouseEnter,
   onMouseUp,
-  onKeyDown,
   grid,
   isCurrentNode,
   isWeighted,
@@ -20,14 +43,11 @@ export default function Node({
   isVisitedPreviously,
   isAnimateSecondPath,
   isHeadOfPath,
-  distanceFromStart,
-  isAnimationFinished,
   isInstantPath,
   isYellowPath,
-  totalDistance,
   isAnimateInstantly,
   isAnimateSecondPathInstantly,
-}) {
+}: propsI) => {
   const styles = {
     backgroundColor: isWall
       ? "#008b8b"
@@ -66,7 +86,8 @@ export default function Node({
         (isVisitedPreviously ? " previouslyVisited" : "") +
         (isAnimateSecondPath ? " animateSecondPath" : "") +
         (isCurrentNode ? " currentNode" : "") +
-        (isAnimateSecondPathInstantly ? " animateSecondPathInstantly" : "")
+        (isAnimateSecondPathInstantly ? " animateSecondPathInstantly" : "") +
+        (isInstantPath ? " instantPath" : "")
       }
       onContextMenu={(event) => {
         event.preventDefault();
@@ -74,10 +95,10 @@ export default function Node({
       }}
       id={`node-${pos.col}-${pos.row}`}
       style={styles}
-      onClick={(event) => onClick(event, pos, grid)}
+      onClick={(event) => onClick(event, pos)}
       onMouseDown={(event) => onMouseDown(event, pos)}
       onMouseEnter={() => onMouseEnter(pos, grid)}
-      onMouseUp={() => onMouseUp(pos)}
+      onMouseUp={() => onMouseUp()}
     >
       {" "}
       {isWeighted && (
@@ -105,4 +126,6 @@ export default function Node({
       {isStart && <img alt="start" src={require("./icons/arrow-right.png")} />}
     </div>
   );
-}
+};
+
+export default Node;

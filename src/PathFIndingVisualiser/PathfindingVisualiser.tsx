@@ -1,92 +1,42 @@
 import "bootstrap/dist/css/bootstrap.css";
-import React, { useEffect, useState, useRef } from "react";
-import "./PathFindingVisualiser.css";
-import Node from "./components/Node.js";
+import "./PathfindingVisualiser.css";
+import React, { useEffect, useState } from "react";
+import Node from "./components/Node";
+import {
+  clearEverything,
+  clearPath,
+  clearPathAndVisitedSquares,
+  getMazeAlgo,
+  getPathFindingAlgo,
+} from "./utils";
 
-import DepthFirstSearch from "./Pathfinding-Algorithms/DepthFirstSearch.js";
-import BreadthFirstSearch from "./Pathfinding-Algorithms/BreadthFirstSearch.js";
-import Dijkstra from "./Pathfinding-Algorithms/Dijkstra.js";
-import Randomn from "./Maze-Generation-Algorithms/RandomnMaze.js";
-import RecursiveDivisionMaze from "./Maze-Generation-Algorithms/RecursiveDivisionMaze.js";
-import AStar from "./Pathfinding-Algorithms/AStar.js";
-import RandomWalk from "./Pathfinding-Algorithms/RandomWalk.js";
-import RecursiveHorizontal from "./Maze-Generation-Algorithms/RecursiveHorizontal.js";
-import RecursiveVertical from "./Maze-Generation-Algorithms/RecursiveVertical.js";
-import bidirectionalGreedySearch from "./Pathfinding-Algorithms/bidirectionalGreedySearch.js";
-import greedyBFS from "./Pathfinding-Algorithms/greedyBestFirstSearch.js";
+//types
+import type { stateI } from "../App";
+import type { gridI, nodeI, posI } from "./grid";
+interface propsI {
+  state: stateI;
+  changeHandler: React.Dispatch<React.SetStateAction<stateI>>;
+  getNodeWithProperty: (property: string) => nodeI | null;
+}
+
 const MAZE_ANIMATION_SPEED = 10;
-export default function PathFindingVisualiser({
+
+const PathfindingVisualiser = ({
   state,
   changeHandler,
   getNodeWithProperty,
-}) {
+}: propsI) => {
   const [pathFinder, setPathFinder] = useState({
     mousePressedOn: "",
     buttonClicked: "",
     isMousePressed: false,
   });
-  const gridRef = useRef(null);
-  const clearEverything = (grid) => {
-    return grid.map((items) =>
-      items.map((item) => ({
-        ...item,
-        isOnPath: false,
-        isInstantPath: false,
-        isAnimate: false,
-        distance: Infinity,
-        totalDistance: Infinity,
-        isVisited: false,
-        isWall: false,
-        isWeighted: false,
-        isWallPreviously: false,
 
-        previousNode: null,
-        isAnimateSecondPath: false,
-
-        isAnimateInstantly: false,
-
-        isHeadOfPath: false,
-      }))
-    );
-  };
-
-  const clearPath = (grid) => {
-    return grid.map((items) =>
-      items.map((item) => ({
-        ...item,
-        isOnPath: false,
-        isAnimateSecondPath: false,
-        isAnimateSecondPathInstantly: false,
-        isAnimateInstantly: false,
-        isInstantPath: false,
-        isAnimate: false,
-        isHeadOfPath: false,
-
-        distance: Infinity,
-        totalDistance: Infinity,
-        isVisited: false,
-
-        isWallPreviously: false,
-
-        previousNode: null,
-      }))
-    );
-  };
-  const clearPathAndVisitedSquares = (grid) => {
-    return grid.map((items) =>
-      items.map((item) => ({
-        ...item,
-        isOnPath: false,
-        isAnimate: false,
-        isInstantPath: false,
-        isAnimateInstantly: false,
-        isAnimateSecondPath: false,
-        isAnimateSecondPathInstantly: false,
-      }))
-    );
-  };
-
-  const animateInstantly = (nodes, property, newGrid) => {
+  const animateInstantly = (
+    nodes: posI[],
+    property: string,
+    newGrid: gridI
+  ) => {
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];
 
@@ -128,7 +78,7 @@ export default function PathFindingVisualiser({
     return newGrid;
   };
 
-  const animate = (nodes, property, delay) => {
+  const animate = (nodes: posI[], property: string, delay: number) => {
     const promises = [];
     for (let i = 0; i < nodes.length; i++) {
       promises.push(
@@ -137,7 +87,7 @@ export default function PathFindingVisualiser({
             const node = nodes[i];
             changeHandler((prev) => {
               const newArray = [];
-              for (var i = 0; i < prev.grid.length; i++) {
+              for (let i = 0; i < prev.grid.length; i++) {
                 newArray[i] = prev.grid[i].slice();
               }
               const ret = {
@@ -168,14 +118,14 @@ export default function PathFindingVisualiser({
     return Promise.all(promises);
   };
 
-  const onMouseDown = (event, pos) => {
+  const onMouseDown = (event: React.MouseEvent<HTMLElement>, pos: posI) => {
     if (state.isAnimationFinished || !state.isAnimationInProgress) {
       const property = event.button === 0 ? "left" : "right";
-      const endPos = getNodeWithProperty("isEnd").pos;
-      const startPos = getNodeWithProperty("isStart").pos;
-      let bombPos;
+      const endPos = (getNodeWithProperty("isEnd") as nodeI).pos;
+      const startPos = (getNodeWithProperty("isStart") as nodeI).pos;
+      let bombPos: posI;
       if (getNodeWithProperty("isBomb"))
-        bombPos = getNodeWithProperty("isBomb").pos;
+        bombPos = (getNodeWithProperty("isBomb") as nodeI).pos;
 
       setPathFinder((prev) => ({
         ...prev,
@@ -193,7 +143,7 @@ export default function PathFindingVisualiser({
     }
   };
 
-  const onMouseEnter = (pos, grid) => {
+  const onMouseEnter = (pos: posI, grid: gridI) => {
     if (state.isAnimationFinished || !state.isAnimationInProgress) {
       if (pathFinder.buttonClicked === "") return;
       const squareProperty =
@@ -201,10 +151,10 @@ export default function PathFindingVisualiser({
 
       let bombPos;
       if (getNodeWithProperty("isBomb"))
-        bombPos = getNodeWithProperty("isBomb").pos;
+        bombPos = (getNodeWithProperty("isBomb") as nodeI).pos;
 
-      const endPos = getNodeWithProperty("isEnd").pos;
-      const startPos = getNodeWithProperty("isStart").pos;
+      const endPos = (getNodeWithProperty("isEnd") as nodeI).pos;
+      const startPos = (getNodeWithProperty("isStart") as nodeI).pos;
 
       if (
         (pos.row === startPos.row && pos.col === startPos.col) ||
@@ -249,7 +199,7 @@ export default function PathFindingVisualiser({
               ? gridCopy[pos.row][pos.col].pos
               : gridCopy[bombPos.row][bombPos.col].pos;
 
-        let newGrid = [];
+        let newGrid: gridI = [];
         for (let i = 0; i < state.grid.length; i++) {
           newGrid[i] = state.grid[i].slice();
         }
@@ -271,14 +221,15 @@ export default function PathFindingVisualiser({
         const pathFindingAlgo = getPathFindingAlgo(state.algoPicked);
         let toBomb,
           toEnd,
-          pathToBomb,
-          pathToEnd,
-          nodesVisitedToBomb,
-          nodesVisitedToEnd,
-          nodesVisitedInOrder,
-          path;
+          pathToBomb!: posI[],
+          pathToEnd!: posI[],
+          nodesVisitedToBomb!: posI[],
+          nodesVisitedToEnd!: posI[],
+          nodesVisitedInOrder!: posI[],
+          path!: posI[];
         if (getNodeWithProperty("isBomb")) {
-          let bombNodePos = gridCopy[bombPos.row][bombPos.col].pos;
+          //@ts-expect-error fix later
+          const bombNodePos = gridCopy[bombPos.row][bombPos.col].pos;
           switch (pathFinder.mousePressedOn) {
             case "start":
               toBomb = pathFindingAlgo(
@@ -333,20 +284,20 @@ export default function PathFindingVisualiser({
               break;
           }
           newGrid = animateInstantly(
-            nodesVisitedToEnd,
+            nodesVisitedToEnd as posI[],
             "isAnimateSecondPathInstantly",
             newGrid
           );
           newGrid = animateInstantly(
-            nodesVisitedToBomb,
+            nodesVisitedToBomb as posI[],
             "isAnimateInstantly",
             newGrid
           );
           newGrid = animateInstantly(pathToBomb, "isInstantPath", newGrid);
           newGrid = animateInstantly(pathToEnd, "isInstantPath", newGrid);
-          let scannedNodes =
+          const scannedNodes =
             nodesVisitedToBomb.length + nodesVisitedToEnd.length;
-          let pathLength = pathToBomb.length + pathToEnd.length;
+          const pathLength = pathToBomb.length + pathToEnd.length;
           changeHandler((prev) => ({
             ...prev,
             grid: newGrid,
@@ -354,7 +305,7 @@ export default function PathFindingVisualiser({
             pathLength,
           }));
         } else {
-          let ret = pathFindingAlgo(
+          const ret = pathFindingAlgo(
             gridCopy,
             pathFinder.mousePressedOn === "start"
               ? gridCopy[pos.row][pos.col].pos
@@ -385,7 +336,7 @@ export default function PathFindingVisualiser({
         ? changeSquare(squareProperty, pos)
         : changeHandler((prev) => {
             const newArray = [];
-            for (var i = 0; i < prev.grid.length; i++) {
+            for (let i = 0; i < prev.grid.length; i++) {
               newArray[i] = prev.grid[i].slice();
             }
             return {
@@ -393,7 +344,7 @@ export default function PathFindingVisualiser({
               grid: newArray.map((items) =>
                 items.map((item) => {
                   const { row, col } = item.pos;
-                  let putWall =
+                  const putWall =
                     (item.isWallPreviously &&
                       (pathFinder.mousePressedOn === "start"
                         ? !item.isEnd && !item.isBomb
@@ -443,17 +394,17 @@ export default function PathFindingVisualiser({
           });
     }
   };
-  const changeSquare = (property, pos) => {
+  const changeSquare = (property: string, pos: posI) => {
     changeHandler((prev) => {
       const newArray = [];
-      for (var i = 0; i < prev.grid.length; i++) {
+      for (let i = 0; i < prev.grid.length; i++) {
         newArray[i] = prev.grid[i].slice();
       }
       const newGrid = newArray.map((items) =>
         items.map((item) => {
           const { row, col } = item.pos;
           return row === pos.row && col === pos.col
-            ? { ...item, [property]: !item[property] }
+            ? { ...item, [property]: !item[property as keyof nodeI] }
             : item;
         })
       );
@@ -464,14 +415,14 @@ export default function PathFindingVisualiser({
     });
   };
 
-  const onClick = (event, pos, grid) => {
+  const onClick = (event: React.MouseEvent<HTMLElement>, pos: posI) => {
     if (state.isAnimationFinished || !state.isAnimationInProgress) {
       const property = event.button === 0 ? "isWall" : "isWeighted";
-      const endPos = getNodeWithProperty("isEnd").pos;
-      const startPos = getNodeWithProperty("isStart").pos;
+      const endPos = (getNodeWithProperty("isEnd") as nodeI).pos;
+      const startPos = (getNodeWithProperty("isStart") as nodeI).pos;
       let bombPos;
       if (getNodeWithProperty("isBomb"))
-        bombPos = getNodeWithProperty("isBomb").pos;
+        bombPos = (getNodeWithProperty("isBomb") as nodeI).pos;
       if (
         (pos.col === endPos.col && pos.row === endPos.row) ||
         (pos.col === startPos.col && pos.row === startPos.row) ||
@@ -481,7 +432,7 @@ export default function PathFindingVisualiser({
       }
       changeHandler((prev) => {
         const newArray = [];
-        for (var i = 0; i < prev.grid.length; i++) {
+        for (let i = 0; i < prev.grid.length; i++) {
           newArray[i] = prev.grid[i].slice();
         }
 
@@ -503,7 +454,7 @@ export default function PathFindingVisualiser({
       });
     }
   };
-  const onMouseUp = (pos) =>
+  const onMouseUp = () =>
     setPathFinder((prev) => ({
       ...prev,
       buttonClicked: "",
@@ -513,7 +464,7 @@ export default function PathFindingVisualiser({
   const handleBombButton = () => {
     changeHandler((prev) => {
       const newArray = [];
-      for (var i = 0; i < prev.grid.length; i++) {
+      for (let i = 0; i < prev.grid.length; i++) {
         newArray[i] = prev.grid[i].slice();
       }
 
@@ -532,168 +483,130 @@ export default function PathFindingVisualiser({
     });
   };
 
-  const getPathFindingAlgo = (algoPicked) => {
-    switch (algoPicked) {
-      case "Breadth-First Search":
-        return BreadthFirstSearch;
-      case "Depth-First Search":
-        return DepthFirstSearch;
-      case "A*":
-        return AStar;
-      case "Dijkstra's algorithm":
-        return Dijkstra;
-      case "Random Walk":
-        return RandomWalk;
-      case "Bidirectional Greedy Search":
-        return bidirectionalGreedySearch;
-      case "Greedy Best First Search":
-        return greedyBFS;
-      default:
-        break;
-    }
-  };
-  const getMazeAlgo = (mazePicked) => {
-    switch (mazePicked) {
-      case "Recursive Division":
-      case "Weight Recursive Division":
-        return RecursiveDivisionMaze;
-
-      case "Horizontal":
-        return RecursiveHorizontal;
-      case "Vertical":
-        return RecursiveVertical;
-      case "Random Maze":
-      case "Random Weight Maze":
-        return Randomn;
-
-      default:
-        break;
-    }
-  };
-
   useEffect(() => {
-    if (state.bombPicked && getNodeWithProperty("isBomb") == null) {
-      handleBombButton();
-    }
+    (async () => {
+      if (state.bombPicked && getNodeWithProperty("isBomb") == null) {
+        handleBombButton();
+      }
 
-    if (
-      ((state.isAnimationFinished || !state.isAnimationInProgress) &&
-        state.isVisualiseAttempted &&
-        state.algoPicked) ||
-      state.mazePicked
-    ) {
-      const newGrid =
-        state.mazePicked === ""
-          ? clearPathAndVisitedSquares(state.grid)
-          : clearEverything(state.grid);
-      changeHandler((prev) => ({ ...prev, grid: newGrid }));
-      if (state.mazePicked) {
-        changeHandler((prev) => ({
-          ...prev,
-          isAnimationFinished: false,
-          isAnimationInProgress: true,
-        }));
-        const mazeAlgo = getMazeAlgo(state.mazePicked);
-        let maze = mazeAlgo(
-          state.grid,
-          getNodeWithProperty("isStart").pos,
-          getNodeWithProperty("isEnd").pos,
-          getNodeWithProperty("isBomb") && getNodeWithProperty("isBomb").pos
-        );
-        let obstacle =
-          state.mazePicked === "Random Weight Maze" ||
-          state.mazePicked === "Weight Recursive Division"
-            ? "isWeighted"
-            : "isWall";
-        animate(maze, obstacle, MAZE_ANIMATION_SPEED).then(() =>
+      if (
+        ((state.isAnimationFinished || !state.isAnimationInProgress) &&
+          state.isVisualiseAttempted &&
+          state.algoPicked) ||
+        state.mazePicked
+      ) {
+        const newGrid =
+          state.mazePicked === ""
+            ? clearPathAndVisitedSquares(state.grid)
+            : clearEverything(state.grid);
+        changeHandler((prev) => ({ ...prev, grid: newGrid }));
+        if (state.mazePicked) {
           changeHandler((prev) => ({
             ...prev,
-            isAnimationInProgress: false,
-            mazePicked: "",
-          }))
-        );
-      } else {
-        changeHandler((prev) => ({
-          ...prev,
-          isAnimationInProgress: true,
-          isAnimationFinished: false,
-          scannedNodes: 0,
-          pathLength: 0,
-        }));
-        const stateAlgo = getPathFindingAlgo(state.algoPicked);
-        const newGrid = state.grid.map((items) =>
-          items.map((item) => ({
-            ...item,
-            isVisited: false,
-            distance: Infinity,
-            totalDistance: Infinity,
-            previousNode: null,
-          }))
-        );
-        if (state.bombPicked) {
-          const toBomb = stateAlgo(
-            newGrid,
-            getNodeWithProperty("isStart").pos,
-            getNodeWithProperty("isBomb").pos
-          );
-          const pathToBomb = toBomb.path;
-          const nodesVisitedToBomb = toBomb.nodesVisitedInOrder;
-
-          const toEnd = stateAlgo(
-            newGrid.map((items) =>
-              items.map((item) => ({
-                ...item,
-                isVisited: false,
-                distance: Infinity,
-                totalDistance: Infinity,
-                previousNode: null,
-              }))
-            ),
-            getNodeWithProperty("isBomb").pos,
-            getNodeWithProperty("isEnd").pos
-          );
-          const pathToEnd = toEnd.path;
-          const nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
-
-          animate(nodesVisitedToBomb, "isAnimate", state.speed)
-            .then(() =>
-              animate(nodesVisitedToEnd, "isAnimateSecondPath", state.speed)
-            )
-            .then(() => animate(pathToBomb, "isOnPath", state.speed * 2))
-            .then(() => animate(pathToEnd, "isOnPath", state.speed * 2))
-
-            .then(() => {
-              changeHandler((prev) => ({
-                ...prev,
-                isAnimationInProgress: false,
-                isAnimationFinished: true,
-                isVisualiseAttempted: false,
-                scannedNodes:
-                  nodesVisitedToBomb.length + nodesVisitedToEnd.length,
-                pathLength: pathToBomb.length + pathToEnd.length,
-              }));
-            });
-        } else {
-          const { path, nodesVisitedInOrder } = stateAlgo(
+            isAnimationFinished: false,
+            isAnimationInProgress: true,
+          }));
+          const mazeAlgo = getMazeAlgo(state.mazePicked);
+          const bomb = getNodeWithProperty("isBomb");
+          const maze = mazeAlgo(
             state.grid,
-            getNodeWithProperty("isStart").pos,
-            getNodeWithProperty("isEnd").pos
+            (getNodeWithProperty("isStart") as nodeI).pos,
+            (getNodeWithProperty("isEnd") as nodeI).pos,
+            bomb && bomb.pos
           );
-          animate(nodesVisitedInOrder, "isAnimate", state.speed).then(() => {
-            animate(path, "isOnPath", state.speed * 2).then(() => {
-              changeHandler((prev) => ({
-                ...prev,
-                isAnimationInProgress: false,
-                isAnimationFinished: true,
-                isVisualiseAttempted: false,
-                scannedNodes: nodesVisitedInOrder.length,
-                pathLength: path.length,
-              }));
-            });
-          });
+          const obstacle =
+            state.mazePicked === "Random Weight Maze" ||
+            state.mazePicked === "Weight Recursive Division"
+              ? "isWeighted"
+              : "isWall";
+          animate(maze, obstacle, MAZE_ANIMATION_SPEED).then(() =>
+            changeHandler((prev) => ({
+              ...prev,
+              isAnimationInProgress: false,
+              mazePicked: "",
+            }))
+          );
+        } else {
+          changeHandler((prev) => ({
+            ...prev,
+            isAnimationInProgress: true,
+            isAnimationFinished: false,
+            scannedNodes: 0,
+            pathLength: 0,
+          }));
+          const stateAlgo = getPathFindingAlgo(state.algoPicked);
+          const newGrid = state.grid.map((items) =>
+            items.map((item) => ({
+              ...item,
+              isVisited: false,
+              distance: Infinity,
+              totalDistance: Infinity,
+              previousNode: null,
+            }))
+          );
+          if (state.bombPicked) {
+            const toBomb = stateAlgo(
+              newGrid,
+              (getNodeWithProperty("isStart") as nodeI).pos,
+              (getNodeWithProperty("isBomb") as nodeI).pos
+            );
+            const pathToBomb = toBomb.path;
+            const nodesVisitedToBomb = toBomb.nodesVisitedInOrder;
+
+            const toEnd = stateAlgo(
+              newGrid.map((items) =>
+                items.map((item) => ({
+                  ...item,
+                  isVisited: false,
+                  distance: Infinity,
+                  totalDistance: Infinity,
+                  previousNode: null,
+                }))
+              ),
+              (getNodeWithProperty("isBomb") as nodeI).pos,
+              (getNodeWithProperty("isEnd") as nodeI).pos
+            );
+            const pathToEnd = toEnd.path;
+            const nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
+
+            await animate(nodesVisitedToBomb, "isAnimate", state.speed);
+            await animate(
+              nodesVisitedToEnd,
+              "isAnimateSecondPath",
+              state.speed
+            );
+            await animate(pathToBomb, "isOnPath", state.speed * 2);
+            await animate(pathToEnd, "isOnPath", state.speed * 2);
+            changeHandler((prev) => ({
+              ...prev,
+              isAnimationInProgress: false,
+              isAnimationFinished: true,
+              isVisualiseAttempted: false,
+              scannedNodes:
+                nodesVisitedToBomb.length + nodesVisitedToEnd.length,
+              pathLength: pathToBomb.length + pathToEnd.length,
+            }));
+          } else {
+            const { path, nodesVisitedInOrder } = stateAlgo(
+              state.grid,
+              (getNodeWithProperty("isStart") as nodeI).pos,
+              (getNodeWithProperty("isEnd") as nodeI).pos
+            );
+
+            await animate(nodesVisitedInOrder, "isAnimate", state.speed);
+            await animate(path, "isOnPath", state.speed * 2);
+            changeHandler((prev) => ({
+              ...prev,
+              isAnimationInProgress: false,
+              isAnimationFinished: true,
+              isVisualiseAttempted: false,
+              scannedNodes: nodesVisitedInOrder.length,
+              pathLength: path.length,
+            }));
+          }
         }
       }
-    }
+    })();
   }, [
     state.algoPicked,
     state.mazePicked,
@@ -724,22 +637,14 @@ export default function PathFindingVisualiser({
           grid={state.grid}
           isCurrentNode={node.isCurrentNode}
           isHeadOfPath={node.isHeadOfPath}
-          distance={node.distance}
           isInstantPath={node.isInstantPath}
-          isAnimationFinished={state.isAnimationFinished}
           isYellowPath={node.isYellowPath}
-          totalDistance={node.totalDistance}
-          isWeightedPreviously={node.isWeightedPreviously}
           isAnimateInstantly={node.isAnimateInstantly}
           isAnimateSecondPathInstantly={node.isAnimateSecondPathInstantly}
         ></Node>
       ))}
     </div>
   ));
-  return (
-    <div ref={gridRef} className="grid">
-      {" "}
-      {grid}
-    </div>
-  );
-}
+  return <div className="grid"> {grid}</div>;
+};
+export default PathfindingVisualiser;

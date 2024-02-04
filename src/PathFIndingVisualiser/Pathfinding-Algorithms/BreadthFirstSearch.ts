@@ -1,10 +1,12 @@
-export default function BreadthFirstSearch(grid, src, dest) {
+import { gridI, posI } from "../grid";
+
+const BreadthFirstSearch = (grid: gridI, src: posI, dest: posI) => {
   const visitedGrid = grid.map((items) =>
-    items.map((item) => ({ row: -1, col: -1 }))
+    items.map(() => ({ row: -1, col: -1 }))
   );
-  let nodesVisitedInOrder = [];
+  const nodesVisitedInOrder: posI[] = [];
   visitedGrid[src.row][src.col] = { row: src.row, col: src.col };
-  let path = [];
+  const path = [];
   if (BFSPathCheck(grid, src, dest, visitedGrid, nodesVisitedInOrder)) {
     let v = dest;
     while (v.col !== src.col || v.row !== src.row) {
@@ -16,16 +18,22 @@ export default function BreadthFirstSearch(grid, src, dest) {
   }
 
   return { path, nodesVisitedInOrder };
-}
-const BFSPathCheck = (grid, src, dest, visitedGrid, nodesVisitedInOrder) => {
-  let found = false;
+};
+const BFSPathCheck = (
+  grid: gridI,
+  src: posI,
+  dest: posI,
+  visitedGrid: { row: number; col: number }[][],
+  nodesVisitedInOrder: posI[]
+) => {
+  const found = false;
   const queue = [];
   queue.push(src);
   nodesVisitedInOrder.push(src);
   while (!found || queue.length !== 0) {
     if (queue.length === 0) return false;
 
-    let v = queue.shift();
+    const v = queue.shift() as posI;
 
     if (v.row === dest.row && v.col === dest.col) {
       return true;
@@ -44,7 +52,7 @@ const BFSPathCheck = (grid, src, dest, visitedGrid, nodesVisitedInOrder) => {
         neighbours.push({ row: v.row + 1, col: v.col });
       }
 
-      for (let neighbour of neighbours) {
+      for (const neighbour of neighbours) {
         if (visitedGrid[neighbour.row][neighbour.col].row === -1) {
           visitedGrid[neighbour.row][neighbour.col] = v;
           nodesVisitedInOrder.push(neighbour);
@@ -55,3 +63,5 @@ const BFSPathCheck = (grid, src, dest, visitedGrid, nodesVisitedInOrder) => {
   }
   return found;
 };
+
+export default BreadthFirstSearch;

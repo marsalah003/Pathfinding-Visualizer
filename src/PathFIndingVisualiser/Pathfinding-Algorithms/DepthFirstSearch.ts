@@ -1,13 +1,15 @@
-export default function DepthFirstSearch(grid, src, dest) {
+import { gridI, posI } from "../grid";
+
+const DepthFirstSearch = (grid: gridI, src: posI, dest: posI) => {
   const visitedGrid = grid.map((items) =>
-    items.map((item) => ({ row: -1, col: -1 }))
+    items.map(() => ({ row: -1, col: -1 }))
   );
   const nodesVisitedInOrder = [];
   nodesVisitedInOrder.push(src);
 
   visitedGrid[src.row][src.col] = { row: src.row, col: src.col };
 
-  let path = [];
+  const path = [];
   if (DFSPathCheck(grid, src, dest, nodesVisitedInOrder, visitedGrid)) {
     let v = dest;
     while (v.col !== src.col || v.row !== src.row) {
@@ -18,8 +20,14 @@ export default function DepthFirstSearch(grid, src, dest) {
     path.unshift(src);
   }
   return { path, nodesVisitedInOrder };
-}
-const DFSPathCheck = (grid, src, dest, nodesVisitedInOrder, visitedGrid) => {
+};
+const DFSPathCheck = (
+  grid: gridI,
+  src: posI,
+  dest: posI,
+  nodesVisitedInOrder: posI[],
+  visitedGrid: { row: number; col: number }[][]
+) => {
   const neighbours = [];
   if (
     src.col - 1 <= 65 &&
@@ -50,7 +58,7 @@ const DFSPathCheck = (grid, src, dest, nodesVisitedInOrder, visitedGrid) => {
     neighbours.push({ row: src.row + 1, col: src.col });
   }
 
-  for (let neighbour of neighbours) {
+  for (const neighbour of neighbours) {
     if (visitedGrid[neighbour.row][neighbour.col].row === -1) {
       visitedGrid[neighbour.row][neighbour.col] = src;
       nodesVisitedInOrder.push(neighbour);
@@ -65,3 +73,4 @@ const DFSPathCheck = (grid, src, dest, nodesVisitedInOrder, visitedGrid) => {
   }
   return false;
 };
+export default DepthFirstSearch;

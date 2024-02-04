@@ -1,10 +1,13 @@
-export default function Dijkstra(grid, startNode, finishNode) {
+import { gridI, nodeI, posI } from "../grid";
+import { sortNodesByDistance, getAllNodes } from "./utils";
+
+const Dijkstra = (grid: gridI, startNode: posI, finishNode: posI) => {
   const nodesVisitedInOrder = [];
   grid[startNode.row][startNode.col].distance = 0;
   const unvisitedNodes = getAllNodes(grid);
   while (unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes);
-    const closestNode = unvisitedNodes.shift();
+    const closestNode = unvisitedNodes.shift() as nodeI;
     // if (closestNode.isWall) continue;
     if (closestNode.distance === Infinity)
       return {
@@ -32,22 +35,11 @@ export default function Dijkstra(grid, startNode, finishNode) {
       grid[finishNode.row][finishNode.col],
       grid[startNode.row][startNode.col]
     ),
-    nodesVisitedInOrder,
+    nodesVisitedInOrder: nodesVisitedInOrder.map((item) => item.pos),
   };
-}
-function getAllNodes(grid) {
-  let nodes = [];
-  for (const row of grid) {
-    for (const node of row) {
-      nodes = nodes.concat(node);
-    }
-  }
-  return nodes;
-}
-function sortNodesByDistance(unvisitedNodes) {
-  unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-}
-function updateUnvisitedNeighbors(node, grid) {
+};
+
+const updateUnvisitedNeighbors = (node: nodeI, grid: gridI) => {
   const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
   for (const neighbor of unvisitedNeighbors) {
     if (node.distance + (neighbor.isWeighted ? 15 : 1) < neighbor.distance) {
@@ -55,8 +47,8 @@ function updateUnvisitedNeighbors(node, grid) {
       neighbor.previousNode = node;
     }
   }
-}
-function getUnvisitedNeighbors(node, grid) {
+};
+const getUnvisitedNeighbors = (node: nodeI, grid: gridI) => {
   const neighbors = [];
   const { col, row } = node.pos;
   if (row > 0) neighbors.push(grid[row - 1][col]);
@@ -66,8 +58,8 @@ function getUnvisitedNeighbors(node, grid) {
   return neighbors.filter(
     (neighbor) => !neighbor.isVisited && !neighbor.isWall
   );
-}
-export function getNodesInShortestPathOrder(finishNode, startNode) {
+};
+const getNodesInShortestPathOrder = (finishNode: nodeI, startNode: nodeI) => {
   const nodesInShortestPathOrder = [];
   let currentNode = finishNode;
   while (
@@ -75,9 +67,13 @@ export function getNodesInShortestPathOrder(finishNode, startNode) {
     currentNode.pos.col !== startNode.pos.col
   ) {
     nodesInShortestPathOrder.unshift(currentNode);
-    currentNode = currentNode.previousNode;
-    if (currentNode === null) return nodesInShortestPathOrder;
+    currentNode = currentNode.previousNode as nodeI;
+    if (currentNode === null)
+      return nodesInShortestPathOrder.map((item) => item.pos);
   }
   nodesInShortestPathOrder.unshift(startNode);
-  return nodesInShortestPathOrder.map((item) => item.pos);
-}
+  const ret = nodesInShortestPathOrder.map((item) => item.pos);
+  return ret;
+};
+
+export default Dijkstra;
