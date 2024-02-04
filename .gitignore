@@ -9,7 +9,8 @@
 /coverage
 
 # production
-/build
+
+# /build (for render deployment as npm run build is not working for some reason )
 
 # misc
 .DS_Store
