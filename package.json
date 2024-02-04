@@ -1,7 +1,6 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "homepage": "https://marsalah003.github.io/Pathfinding-Visualizer",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
@@ -12,6 +11,9 @@
     "@types/react": "^18.2.51",
     "@types/react-dom": "^18.2.18",
     "bootstrap": "^5.3.2",
+    "concurrently": "^8.2.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.3",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
     "react-dom": "^18.2.0",
@@ -22,10 +24,11 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "start": "react-scripts start",
+    "start": "node dist/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "serve": "concurrently \"npx tsc -w\" \"nodemon dist/server.js\""
   },
   "eslintConfig": {
     "extends": [
@@ -44,8 +47,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "gh-pages": "^6.1.1"
   }
 }
