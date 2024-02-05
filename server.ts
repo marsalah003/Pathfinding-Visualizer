@@ -2,10 +2,10 @@ import express, { Response, Request } from "express";
 import { join } from "path";
 const app = express();
 
-app.use(express.static(join(__dirname, "../build")));
+app.use(express.static(join(__dirname, "/build")));
 
 app.get("/", (_req: Request, res: Response) => {
-  res.sendFile(join(__dirname, "../build", "index.html"));
+  res.sendFile(join(__dirname, "/build", "index.html"));
 });
 
 const PORT = process.env.PORT || 5000;
