@@ -10,7 +10,7 @@
 
 # production
 
-# /build (for render deployment as npm run build is not working for some reason )
+/build
 
 # misc
 .DS_Store

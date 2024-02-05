@@ -133,6 +133,7 @@ const App = () => {
           isOnPath: false,
           isAnimateSecondPath: false,
           isAnimateSecondPathInstantly: false,
+
           isAnimateInstantly: false,
 
           isInstantPath: false,

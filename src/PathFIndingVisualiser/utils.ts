@@ -31,6 +31,7 @@ const clearEverything = (grid: gridI) => {
 
       previousNode: null,
       isAnimateSecondPath: false,
+      isAnimateSecondPathInstantly: false,
 
       isAnimateInstantly: false,
 
