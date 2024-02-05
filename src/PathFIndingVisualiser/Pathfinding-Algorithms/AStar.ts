@@ -1,6 +1,8 @@
 import { gridI, nodeI, posI } from "../grid";
 import { manhattenDistance } from "./utils";
 
+// Courtesy of rohithaug, Github name: rohithaug
+
 const AStar = (grid: gridI, src: posI, dest: posI) => {
   const unvisitedNodes = []; // Open list.
   const nodesVisitedInOrder = []; // Closed list.

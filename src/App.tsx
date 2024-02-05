@@ -110,6 +110,8 @@ const App = () => {
             isAnimateSecondPathInstantly: false,
             isAnimateInstantly: false,
             isWeighted: false,
+            isWeightedPreviously: false,
+
             isInstantPath: false,
             isAnimate: false,
             isHeadOfPath: false,

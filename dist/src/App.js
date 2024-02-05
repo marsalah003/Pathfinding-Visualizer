@@ -80,7 +80,7 @@ const App = () => {
                 const { row, col } = item.pos;
                 return Object.assign(Object.assign({}, item), { isWall: false, isWallPreviously: false, isStart: row === START_DEFAULT_ROW_POSITION &&
                         col === START_DEFAULT_COL_POSITION, isEnd: row === END_DEFAULT_ROW_POSITION &&
-                        col === END_DEFAULT_COL_POSITION, distance: Infinity, isVisited: false, previousNode: null, isOnPath: false, isAnimateSecondPath: false, isAnimateSecondPathInstantly: false, isAnimateInstantly: false, isWeighted: false, isInstantPath: false, isAnimate: false, isHeadOfPath: false });
+                        col === END_DEFAULT_COL_POSITION, distance: Infinity, isVisited: false, previousNode: null, isOnPath: false, isAnimateSecondPath: false, isAnimateSecondPathInstantly: false, isAnimateInstantly: false, isWeighted: false, isWeightedPreviously: false, isInstantPath: false, isAnimate: false, isHeadOfPath: false });
             })) })));
     };
     const clearPath = () => {

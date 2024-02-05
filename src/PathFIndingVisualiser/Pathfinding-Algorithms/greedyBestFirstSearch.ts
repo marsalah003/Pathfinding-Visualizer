@@ -4,6 +4,7 @@ import {
   neighbourNotInUnvisitedNodes,
   getNeighbours,
 } from "./utils";
+// Courtesy of rohithaug, Github name: rohithaug
 
 const greedyBFS = (grid: gridI, startNode: posI, finishNode: posI) => {
   const start = grid[startNode.row][startNode.col];

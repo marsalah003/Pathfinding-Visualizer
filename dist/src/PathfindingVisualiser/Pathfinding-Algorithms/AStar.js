@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("./utils");
+// Courtesy of rohithaug, Github name: rohithaug
 const AStar = (grid, src, dest) => {
     const unvisitedNodes = []; // Open list.
     const nodesVisitedInOrder = []; // Closed list.

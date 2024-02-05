@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("./utils");
+// Courtesy of rohithaug, Github name: rohithaug
 const greedyBFS = (grid, startNode, finishNode) => {
     const start = grid[startNode.row][startNode.col];
     const end = grid[finishNode.row][finishNode.col];
