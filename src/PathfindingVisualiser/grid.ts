@@ -64,8 +64,8 @@ for (let row = 0; row < GRID_ROW_LENGTH; row++) {
   grid.push(currentRow);
 }
 // Start and destination placed
-grid[11][20].isStart = true;
-grid[11][45].isEnd = true;
+grid[22][0].isStart = true;
+grid[0][65].isEnd = true;
 
 export { grid };
 export type { posI, gridI, nodeI };
