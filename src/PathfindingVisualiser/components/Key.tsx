@@ -1,10 +1,18 @@
 import "./Key.css";
+import arrowRight from "./icons/arrow-right.png"
+import end from "./icons/end.png"
+import wallSquare from "./images/wall-square.png"
+import weightIcon from "./icons/weight-icon.jpg"
+import blueVisitedNode from "./images/blue-visited-node.png"
+import purpleVisitedNode from "./images/purple-visited-node.png"
+import yellowNode from "./images/yellow-node.png"
+
 import React from "react";
 const Key = () => (
   <div className="key">
     <div className="key-value">
       <img
-        src={require("./icons/arrow-right.png")}
+        src={arrowRight}
         alt="start-square"
         className="node-img"
       />
@@ -12,7 +20,7 @@ const Key = () => (
     </div>
     <div className="key-value">
       <img
-        src={require("./icons/end.png")}
+        src={end}
         alt="start-square"
         className="node-img"
       />
@@ -20,7 +28,7 @@ const Key = () => (
     </div>
     <div className="key-value">
       <img
-        src={require("./images/wall-square.png")}
+        src={wallSquare}
         alt="start-square"
         className="node-img"
       />
@@ -28,7 +36,7 @@ const Key = () => (
     </div>
     <div className="key-value">
       <img
-        src={require("./icons/weight-icon.jpg")}
+        src={weightIcon}
         alt="start-square"
         className="node-img"
       />
@@ -36,12 +44,12 @@ const Key = () => (
     </div>
     <div className="key-value">
       <img
-        src={require("./images/blue-visited-node.png")}
+        src={blueVisitedNode}
         alt="start-square"
         className="node-img visited-node"
       />
       <img
-        src={require("./images/purple-visited-node.png")}
+        src={purpleVisitedNode}
         alt="start-square"
         className="node-img visited-node"
       />
@@ -49,7 +57,7 @@ const Key = () => (
     </div>
     <div className="key-value">
       <img
-        src={require("./images/yellow-node.png")}
+        src={yellowNode}
         alt="start-square"
         className="node-img"
       />

@@ -323,7 +323,6 @@ const PathfindingVisualiser = ({
             newGrid
           );
           newGrid = animateInstantly(path, "isInstantPath", newGrid);
-          console.log(path);
           changeHandler((prev) => ({
             ...prev,
             grid: newGrid,
@@ -615,7 +614,7 @@ const PathfindingVisualiser = ({
   ]);
 
   const grid = state.grid.map((row, rowId) => (
-    <div key={rowId}>
+    <div key={rowId} className="grid-row">
       {row.map((node, nodeId) => (
         <Node
           isVisitedPreviously={node.isVisitedPreviously}

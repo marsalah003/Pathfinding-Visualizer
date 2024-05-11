@@ -3,7 +3,7 @@ import "./App.css";
 import PathfindingVisualiser from "./PathfindingVisualiser/PathfindingVisualiser";
 import { grid } from "./PathfindingVisualiser/grid";
 import Navbar from "./PathfindingVisualiser/components/Navbar";
-import React, { useState } from "react";
+import React, { useState} from "react";
 import Key from "./PathfindingVisualiser/components/Key";
 import Info from "./PathfindingVisualiser/components/Info";
 import Tutorial from "./PathfindingVisualiser/components/Tutorial";
@@ -63,7 +63,6 @@ const App = () => {
     clearPath();
   };
   const addBomb = () => {
-    console.log("hhhhh");
     setState((prev) => ({ ...prev, bombPicked: true }));
     clearPath();
   };

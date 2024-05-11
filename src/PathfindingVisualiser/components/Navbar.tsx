@@ -35,15 +35,14 @@ const NavBar = ({
   showTutorial,
 }: propsI) => (
   <Navbar
-    expand="lg"
     className="bg-body-tertiary navbar"
     bg="dark"
-    data-bs-theme="dark"
+    data-bs-theme="dark" 
   >
     <Container fluid>
       <Navbar.Brand href="#">Pathfinding Visualiser</Navbar.Brand>
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="me-auto">
+      <Navbar.Toggle aria-controls="basic-navbar-nav"  />
+      <Nav className="me-auto">
           <ButtonGroup className="button">
             <Dropdown
               variant="secondary"
@@ -199,7 +198,6 @@ const NavBar = ({
             disabled={state.isAnimationInProgress}
             className="button"
             onClick={() => {
-              console.log(state.bombPicked);
               state.bombPicked ? removeBomb() : addBomb();
             }}
           >
@@ -302,7 +300,6 @@ const NavBar = ({
             Tutorial
           </Button>
         </Nav>
-      </Navbar.Collapse>
     </Container>
   </Navbar>
 );

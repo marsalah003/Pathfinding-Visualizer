@@ -1,5 +1,10 @@
 import React from "react";
 import "./Node.css";
+import weightIcon from "./icons/weight-icon.jpg"
+import target from "./icons/target.png"
+import star from "./icons/star.png"
+import end from "./icons/end.png"
+import arrowRight from "./icons/arrow-right.png"
 import { posI, gridI } from "../grid";
 interface propsI {
   pos: posI;
@@ -105,25 +110,25 @@ const Node = ({
         <img
           className="weight"
           alt="weight square"
-          src={require("./icons/weight-icon.jpg")}
+          src={(weightIcon)}
         />
       )}
       {isBomb && (
         <img
           className="bomb"
           alt="target square"
-          src={require("./icons/target.png")}
+          src={(target)}
         />
       )}
       {isHeadOfPath && (
         <img
           className="head"
           alt="head of path"
-          src={require("./icons/star.png")}
+          src={(star)}
         />
       )}
-      {isEnd && <img alt="end" src={require("./icons/end.png")} />}
-      {isStart && <img alt="start" src={require("./icons/arrow-right.png")} />}
+      {isEnd && <img alt="end" src={(end)} />}
+      {isStart && <img alt="start" src={(arrowRight)} />}
     </div>
   );
 };
