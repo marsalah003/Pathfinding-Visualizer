@@ -1,7 +1,5 @@
 # Welcome to my Pathfinding Visualisor!!!
 
-Pathfinding Visualizer
-
 This application was heavily inspired by
 Clement Mihailescu's [video of projects that got him into Google](https://www.youtube.com/watch?v=n4t_-NjY_Sg&ab_channel=Cl%C3%A9mentMihailescu) in which one of his projects is a pathfinding visualisation tool.
 
