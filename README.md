@@ -7,7 +7,8 @@ Clement Mihailescu's [video of projects that got him into Google](https://www.yo
 
 This visualisation tool can be accessed [here](https://marsalah003.github.io/Pathfinding-Visualizer).
 
-Meet the Algorithms
+## Meet the Algorithms
+
 This application supports the following algorithms:
 
 **Dijkstra's Algorithm (weighted)**: the father of pathfinding algorithms; guarantees the shortest path
