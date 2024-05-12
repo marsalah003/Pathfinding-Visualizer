@@ -1,12 +1,12 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from "react";
-import pathIcon from "./images/path-icon.png"
-import algosGif from "./images/algos.gif"
-import wallDemo from "./images/wall-demonstration.gif"
-import weightDemo from "./images/weight-demonstration.gif"
-import targetButton from "./images/target-button.png"
-import draggingNodeDemo from "./images/dragging-node-demonstration.gif"
-import navbarDemo from "./images/navbar-demo.gif"
+import pathIcon from "./images/path-icon.png";
+import algosGif from "./images/algos.gif";
+import wallDemo from "./images/wall-demonstration.gif";
+import weightDemo from "./images/weight-demonstration.gif";
+import targetButton from "./images/target-button.png";
+import draggingNodeDemo from "./images/dragging-node-demonstration.gif";
+import navbarDemo from "./images/navbar-demo.gif";
 
 import { Button, Modal } from "react-bootstrap";
 
@@ -32,14 +32,13 @@ const Tutorial = ({ modalState, setModalState }: propsI) => (
         A pathfinding algorithm seeks to find the shortest path between two
         points, just like Google Maps or any other mapp app would do.
         <div className="tute-img">
-          <img src={(pathIcon)} alt="path-icon-gif" />
+          <img src={pathIcon} alt="path-icon-gif" />
         </div>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="danger close" onClick={() => setModalState("close")}>
           Close Tutorial
         </Button>
-        <Button variant="secondary">Previous</Button>
         <Button variant="primary" onClick={() => setModalState("modal-two")}>
           Next (1/8)
         </Button>
@@ -64,7 +63,7 @@ const Tutorial = ({ modalState, setModalState }: propsI) => (
         do. When u pick an algorithm, press the green button to visualise it and
         see it come to life!
         <div className="tute-img">
-          <img src={(algosGif)} alt="algo-gif" />
+          <img src={algosGif} alt="algo-gif" />
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -159,10 +158,7 @@ const Tutorial = ({ modalState, setModalState }: propsI) => (
         remove it. You can also generate mazes and patterns from the "Mazes"
         drop-down menu.
         <div className="tute-img">
-          <img
-            src={(wallDemo)}
-            alt="algo-gif"
-          />
+          <img src={wallDemo} alt="algo-gif" />
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -199,10 +195,7 @@ const Tutorial = ({ modalState, setModalState }: propsI) => (
         through. In this application, moving through a weight node has a "cost"
         of 15.
         <div className="tute-img">
-          <img
-            src={(weightDemo)}
-            alt="algo-gif"
-          />
+          <img src={weightDemo} alt="algo-gif" />
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -235,7 +228,7 @@ const Tutorial = ({ modalState, setModalState }: propsI) => (
         weights arent impassable. They are simply more "costly" to move through.
         In this application, moving through a weight node has a "cost" of 15.
         <div className="button-img">
-          <img src={(targetButton)} alt="algo-gif" />
+          <img src={targetButton} alt="algo-gif" />
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -267,10 +260,7 @@ const Tutorial = ({ modalState, setModalState }: propsI) => (
         you can drag nodes even after an algorithm has finished running. This
         will allow you to instantly see different paths.
         <div className="tute-img">
-          <img
-            src={(draggingNodeDemo)}
-            alt="algo-gif"
-          />
+          <img src={draggingNodeDemo} alt="algo-gif" />
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -304,7 +294,7 @@ const Tutorial = ({ modalState, setModalState }: propsI) => (
         If you want to access this tutorial again, click on the "Tutorial"
         button on the right end of the navbar
         <div className="navbar-demo">
-          <img src={(navbarDemo)} alt="algo-gif" />
+          <img src={navbarDemo} alt="algo-gif" />
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -314,6 +304,7 @@ const Tutorial = ({ modalState, setModalState }: propsI) => (
         <Button
           variant="secondary"
           onClick={() => setModalState("modal-seven")}
+          hidden={modalState === "modal-one"}
         >
           Previous
         </Button>
