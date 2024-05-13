@@ -1,10 +1,10 @@
 import React from "react";
 import "./Node.css";
-import weightIcon from "./icons/weight-icon.jpg"
-import target from "./icons/target.png"
-import star from "./icons/star.png"
-import end from "./icons/end.png"
-import arrowRight from "./icons/arrow-right.png"
+import weightIcon from "./icons/weight-icon.jpg";
+import target from "./icons/target.png";
+import star from "./icons/star.png";
+import end from "./icons/end.png";
+import arrowRight from "./icons/arrow-right.png";
 import { posI, gridI } from "../grid";
 interface propsI {
   pos: posI;
@@ -94,41 +94,25 @@ const Node = ({
         (isAnimateSecondPathInstantly ? " animateSecondPathInstantly" : "") +
         (isInstantPath ? " instantPath" : "")
       }
-      onContextMenu={(event) => {
-        event.preventDefault();
-        onClick(event, pos);
+      onContextMenu={(e) => {
+        e.preventDefault();
+        onClick(e, pos);
       }}
       id={`node-${pos.col}-${pos.row}`}
       style={styles}
-      onClick={(event) => onClick(event, pos)}
-      onMouseDown={(event) => onMouseDown(event, pos)}
+      onClick={(e) => onClick(e, pos)}
+      onMouseDown={(e) => onMouseDown(e, pos)}
       onMouseEnter={() => onMouseEnter(pos, grid)}
       onMouseUp={() => onMouseUp()}
     >
       {" "}
       {isWeighted && (
-        <img
-          className="weight"
-          alt="weight square"
-          src={(weightIcon)}
-        />
+        <img className="weight" alt="weight square" src={weightIcon} />
       )}
-      {isBomb && (
-        <img
-          className="bomb"
-          alt="target square"
-          src={(target)}
-        />
-      )}
-      {isHeadOfPath && (
-        <img
-          className="head"
-          alt="head of path"
-          src={(star)}
-        />
-      )}
-      {isEnd && <img alt="end" src={(end)} />}
-      {isStart && <img alt="start" src={(arrowRight)} />}
+      {isBomb && <img className="bomb" alt="target square" src={target} />}
+      {isHeadOfPath && <img className="head" alt="head of path" src={star} />}
+      {isEnd && <img alt="end" src={end} />}
+      {isStart && <img alt="start" src={arrowRight} />}
     </div>
   );
 };

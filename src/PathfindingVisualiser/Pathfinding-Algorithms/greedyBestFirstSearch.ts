@@ -13,7 +13,7 @@ const greedyBFS = (grid: gridI, startNode: posI, finishNode: posI) => {
   const visitedNodesInOrder: nodeI[] = []; //closed list
   start.distance = 0;
   unvisitedNodes.push(start);
-
+  
   while (unvisitedNodes.length !== 0) {
     unvisitedNodes.sort((a, b) => a.totalDistance - b.totalDistance);
     const closestNode = unvisitedNodes.shift() as nodeI;
@@ -51,7 +51,7 @@ const greedyBFS = (grid: gridI, startNode: posI, finishNode: posI) => {
   };
 };
 
-function getNodesInShortestPathOrderGreedyBFS(finishNode: nodeI) {
+const getNodesInShortestPathOrderGreedyBFS = (finishNode: nodeI) => {
   const nodesInShortestPathOrder = [];
   let currentNode = finishNode;
   while (currentNode !== null) {

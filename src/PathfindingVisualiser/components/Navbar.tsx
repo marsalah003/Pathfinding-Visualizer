@@ -124,9 +124,7 @@ const NavBar = ({
               <Dropdown.Item>Vertical</Dropdown.Item>
               <Dropdown.Item>Random Maze</Dropdown.Item>
               <Dropdown.Item>Random Weight Maze</Dropdown.Item>
-              <Dropdown.Item href="#/action-4">
-                Weight Recursive Division
-              </Dropdown.Item>
+              <Dropdown.Item>Weight Recursive Division</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </ButtonGroup>
@@ -190,25 +188,13 @@ const NavBar = ({
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item
-                href="#/action-1"
-                className=" "
-                onClick={() => resetBoard()}
-              >
+              <Dropdown.Item className=" " onClick={() => resetBoard()}>
                 Reset Board
               </Dropdown.Item>
-              <Dropdown.Item
-                href="#/action-2"
-                className=""
-                onClick={() => clearObstacles()}
-              >
+              <Dropdown.Item className="" onClick={() => clearObstacles()}>
                 Clear Obstacles
               </Dropdown.Item>
-              <Dropdown.Item
-                href="#/action-3"
-                className=""
-                onClick={() => clearPath()}
-              >
+              <Dropdown.Item className="" onClick={() => clearPath()}>
                 Clear Path
               </Dropdown.Item>
             </Dropdown.Menu>
@@ -225,7 +211,6 @@ const NavBar = ({
 
             <Dropdown.Menu>
               <Dropdown.Item
-                href="#/action-1"
                 onClick={() =>
                   changeHandler((prev) => ({
                     ...prev,
@@ -237,7 +222,6 @@ const NavBar = ({
                 Slow
               </Dropdown.Item>
               <Dropdown.Item
-                href="#/action-2"
                 onClick={() =>
                   changeHandler((prev) => ({
                     ...prev,
@@ -249,7 +233,6 @@ const NavBar = ({
                 Average
               </Dropdown.Item>
               <Dropdown.Item
-                href="#/action-3"
                 onClick={() =>
                   changeHandler((prev) => ({
                     ...prev,

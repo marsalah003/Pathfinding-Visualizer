@@ -194,4 +194,4 @@ img {
   background-size: contain;
   background-position: center;
   -webkit-user-drag: none;
-}
+  outline: 0.1px solid black;}
