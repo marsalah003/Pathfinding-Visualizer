@@ -173,6 +173,7 @@ img {
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
+
 }
 
 .animateSecondPathInstantly {
@@ -180,6 +181,7 @@ img {
 }
 .instantPath {
   background-color: yellow;
+  
 }
 .wall {
   animation-name: wallAnimation;
@@ -194,4 +196,5 @@ img {
   background-size: contain;
   background-position: center;
   -webkit-user-drag: none;
-  outline: 0.1px solid black;}
+  outline: 0.1px solid black;
+}
