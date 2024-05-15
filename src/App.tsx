@@ -3,11 +3,17 @@ import "./App.css";
 import PathfindingVisualiser from "./PathfindingVisualiser/PathfindingVisualiser";
 import { grid } from "./PathfindingVisualiser/grid";
 import Navbar from "./PathfindingVisualiser/components/Navbar";
-import React, { useState} from "react";
+import React, { useState } from "react";
 import Key from "./PathfindingVisualiser/components/Key";
 import Info from "./PathfindingVisualiser/components/Info";
 import Tutorial from "./PathfindingVisualiser/components/Tutorial";
 import type { gridI, nodeI } from "./PathfindingVisualiser/grid";
+import {
+  START_DEFAULT_COL_POSITION,
+  START_DEFAULT_ROW_POSITION,
+  END_DEFAULT_COL_POSITION,
+  END_DEFAULT_ROW_POSITION,
+} from "./PathfindingVisualiser/grid";
 interface stateI {
   isAnimationInProgress: boolean;
   algoPicked: string;
@@ -20,12 +26,6 @@ interface stateI {
   grid: gridI;
   speed: number;
 }
-
-const START_DEFAULT_ROW_POSITION = 11;
-const START_DEFAULT_COL_POSITION = 20;
-
-const END_DEFAULT_ROW_POSITION = 11;
-const END_DEFAULT_COL_POSITION = 30;
 
 const App = () => {
   const [state, setState] = useState<stateI>({
@@ -40,7 +40,7 @@ const App = () => {
     grid,
     speed: 15,
   });
-  const [modalState, setModalState] = useState<string>("close");
+  const [modalState, setModalState] = useState<number>(-1);
 
   const getNodeWithProperty = (property: string) => {
     for (let i = 0; i < state.grid.length; i++) {
@@ -142,7 +142,7 @@ const App = () => {
       ),
     }));
   };
-  const showTutorial = () => setModalState("modal-one");
+  const showTutorial = () => setModalState(0);
   return (
     <>
       <Navbar
