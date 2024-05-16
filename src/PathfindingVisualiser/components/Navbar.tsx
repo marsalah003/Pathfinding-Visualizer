@@ -150,11 +150,16 @@ const NavBar = ({
               `Generating Maze...`
             ) : state.algoPicked && state.isAnimationInProgress ? (
               <>
-                Visualising <b>{state.algoPicked}</b>...
+                Visualising <b>{state.algoPicked}</b>...{" "}
+                {/* <i className="bi bi-stop-fill" /> */}
               </>
             ) : state.algoPicked ? (
               <>
-                Visualise <b>{state.algoPicked}</b>
+                <span>
+                  Visualise <b>{state.algoPicked}</b>
+                </span>{" "}
+                &nbsp;
+                <i className="bi bi-play-circle"></i>
               </>
             ) : (
               `Pick an Algorithm!`

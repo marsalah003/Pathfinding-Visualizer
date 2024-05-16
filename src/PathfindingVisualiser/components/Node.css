@@ -1,15 +1,11 @@
 .node {
   width: 20px;
   height: 20px;
-
   outline: 0.1px solid black;
   display: inline-block;
   vertical-align: top;
-  position: relative;
-
-
-  -webkit-user-drag: none;
   user-select: none;
+  position: relative;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -18,22 +14,6 @@ img {
   max-width: 100%;
   max-height: 100%;
   -webkit-user-drag: none;
-}
-.weight {
-  animation-name: weightAnimation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease-out;
-  animation-delay: 0;
-  animation-direction: alternate;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  /* background-size: contain;
-  background-position: center; */
-  -webkit-user-drag: none;
-}
-.bomb {
-  cursor: pointer;
 }
 
 @keyframes wallAnimation {
@@ -125,9 +105,13 @@ img {
   }
 }
 
-.visited {
-  animation-name: visitedAnimation;
-  animation-duration: 1.5s;
+.start, .end, .bomb {
+  cursor: pointer;
+  -webkit-user-drag: none;
+}
+
+.onPath, .wall, .animateSecondPath, .visited {
+  animation-duration: 0.5s;
   animation-timing-function: ease-out;
   animation-delay: 0.01s;
   animation-direction: alternate;
@@ -135,66 +119,22 @@ img {
   animation-fill-mode: forwards;
   animation-play-state: running;
 }
-.start {
-  cursor: pointer;
 
-  -webkit-user-drag: none;
-}
-
-.previouslyVisited {
-  background-color: rgba(178, 67, 255, 0.75);
-}
-.end {
-  cursor: pointer;
-
-  -webkit-user-drag: none;
-}
-
-.currentNode {
-  background-color: yellow !important;
+.visited {
+  animation-name: visitedAnimation;
 }
 .animateSecondPath {
   animation-name: secondVisitedAnimation;
-  animation-duration: 1s;
-  animation-timing-function: ease-out;
-  animation-delay: 0;
-  animation-direction: alternate;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
 }
-
-.onPath {
+.visited, .animateSecondPath{
+  animation-duration: 1.5s
+}
+.onPath{
   animation-name: shortestPath;
-  animation-duration: 0.5s;
-  animation-timing-function: ease-out;
-  animation-delay: 0s;
-  animation-direction: alternate;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-
-}
-
-.animateSecondPathInstantly {
-  background-color: rgba(178, 67, 255, 0.75);
-}
-.instantPath {
-  background-color: yellow;
-  
 }
 .wall {
   animation-name: wallAnimation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease-out;
-  animation-delay: 0;
-  animation-direction: alternate;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  outline-width: 0px;
-  background-size: contain;
-  background-position: center;
-  -webkit-user-drag: none;
-  outline: 0.1px solid black;
+}
+.weight {
+  animation-name: weightAnimation;
 }

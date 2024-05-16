@@ -54,46 +54,30 @@ const Node = ({
   isAnimateSecondPathInstantly,
 }: propsI) => {
   const styles = {
-    backgroundColor: isWall
-      ? "#008b8b"
-      : isAnimate
-      ? "yellow"
-      : isOnPath
-      ? "blue"
-      : isVisitedPreviously
+    backgroundColor: isVisitedPreviously
       ? "rgba(178, 67, 255, 0.75)"
-      : isAnimateSecondPath
-      ? "rgba(178, 67, 255, 0.75)"
-      : isCurrentNode
-      ? "yellow"
-      : isInstantPath
-      ? "yellow"
-      : isYellowPath
-      ? "yellow"
+      : isCurrentNode || isInstantPath || isYellowPath
+      ? "rgb(255, 254, 106)"
       : isAnimateSecondPathInstantly
       ? "rgba(178, 67, 255, 0.75)"
       : isAnimateInstantly
       ? "rgba(0, 190, 218, 0.75)"
       : "white",
   };
+  const className =
+    "node" +
+    (isWall ? " wall" : "") +
+    (isAnimate ? " visited" : "") +
+    (isOnPath ? " onPath" : "") +
+    (isWeighted ? " weighted" : "") +
+    (isBomb ? " bomb" : "") +
+    (isStart ? " start" : "") +
+    (isEnd ? " end" : "") +
+    (isAnimateSecondPath ? " animateSecondPath" : "");
 
   return (
     <div
-      className={
-        "node" +
-        (isWall ? " wall" : "") +
-        (isAnimate ? " visited" : "") +
-        (isOnPath ? " onPath" : "") +
-        (isWeighted ? " weighted" : "") +
-        (isBomb ? " bomb" : "") +
-        (isStart ? " start" : "") +
-        (isEnd ? " end" : "") +
-        (isVisitedPreviously ? " previouslyVisited" : "") +
-        (isAnimateSecondPath ? " animateSecondPath" : "") +
-        (isCurrentNode ? " currentNode" : "") +
-        (isAnimateSecondPathInstantly ? " animateSecondPathInstantly" : "") +
-        (isInstantPath ? " instantPath" : "")
-      }
+      className={className}
       onContextMenu={(e) => {
         e.preventDefault();
         onClick(e, pos);
@@ -103,9 +87,8 @@ const Node = ({
       onClick={(e) => onClick(e, pos)}
       onMouseDown={(e) => onMouseDown(e, pos)}
       onMouseEnter={() => onMouseEnter(pos, grid)}
-      onMouseUp={() => onMouseUp()}
+      onMouseUp={onMouseUp}
     >
-      {" "}
       {isWeighted && (
         <img className="weight" alt="weight square" src={weightIcon} />
       )}

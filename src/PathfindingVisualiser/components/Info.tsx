@@ -5,17 +5,25 @@ interface props {
   scannedNodes: number;
   pathLength: number;
 }
-const Info = ({ algorithmType, scannedNodes, pathLength }: props) => (
-  <div className="info">
-    <span>
-      {" "}
-      <b>Algorithm of choice:</b> {algorithmType || "???"}
-      {", "}
-      <b>Scanned Nodes:</b> {scannedNodes || "???"}
-      {", "}
-      <b>Shortest Path Length: </b> {pathLength || "???"}
-    </span>
-  </div>
-);
+
+const Info = ({ algorithmType, scannedNodes, pathLength }: props) => {
+  const info = [
+    { name: "Algorithm of choice", dep: algorithmType },
+    { name: "Scanned Nodes", dep: scannedNodes },
+    { name: "Shortest Path Length", dep: pathLength },
+  ];
+  return (
+    <div className="info">
+      <span>
+        {info.map(({ name, dep }, i) => (
+          <>
+            <b>{name}:</b> {dep || "🤔"}
+            {i !== info.length - 1 && ", "}
+          </>
+        ))}
+      </span>
+    </div>
+  );
+};
 
 export default Info;

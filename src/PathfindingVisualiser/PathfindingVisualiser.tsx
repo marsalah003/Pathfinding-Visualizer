@@ -79,23 +79,18 @@ const PathfindingVisualiser = ({
   };
 
   const animate = (nodes: posI[], property: string, delay: number) => {
-    const promises = [];
-    for (let i = 0; i < nodes.length; i++) {
+    const promises: any[] = [];
+    nodes.forEach((n, i) => {
       promises.push(
         new Promise((resolve) => {
           setTimeout(() => {
-            const node = nodes[i];
             changeHandler((prev) => {
-              const newArray = [];
-              for (let i = 0; i < prev.grid.length; i++) {
-                newArray[i] = prev.grid[i].slice();
-              }
               const ret = {
                 ...prev,
-                grid: newArray.map((items) =>
+                grid: prev.grid.map((items) =>
                   items.map((item) => {
                     const { row, col } = item.pos;
-                    return row === node.row && col === node.col
+                    return row === n.row && col === n.col
                       ? property === "isOnPath"
                         ? { ...item, [property]: true, isHeadOfPath: true }
                         : property === "isAnimate" ||
@@ -113,7 +108,7 @@ const PathfindingVisualiser = ({
           }, delay * i);
         })
       );
-    }
+    });
 
     return Promise.all(promises);
   };
@@ -518,13 +513,12 @@ const PathfindingVisualiser = ({
             state.mazePicked === "Weight Recursive Division"
               ? "isWeighted"
               : "isWall";
-          animate(maze, obstacle, MAZE_ANIMATION_SPEED).then(() =>
-            changeHandler((prev) => ({
-              ...prev,
-              isAnimationInProgress: false,
-              mazePicked: "",
-            }))
-          );
+          await animate(maze, obstacle, MAZE_ANIMATION_SPEED);
+          changeHandler((prev) => ({
+            ...prev,
+            isAnimationInProgress: false,
+            mazePicked: "",
+          }));
         } else {
           changeHandler((prev) => ({
             ...prev,
@@ -567,7 +561,6 @@ const PathfindingVisualiser = ({
             );
             const pathToEnd = toEnd.path;
             const nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
-
             await animate(nodesVisitedToBomb, "isAnimate", state.speed);
             await animate(
               nodesVisitedToEnd,
