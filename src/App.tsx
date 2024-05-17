@@ -3,10 +3,11 @@ import "./App.css";
 import PathfindingVisualiser from "./PathfindingVisualiser/PathfindingVisualiser";
 import { grid } from "./PathfindingVisualiser/grid";
 import Navbar from "./PathfindingVisualiser/components/Navbar";
-import React, { useState } from "react";
+import React, { useState, createContext } from "react";
 import Key from "./PathfindingVisualiser/components/Key";
 import Info from "./PathfindingVisualiser/components/Info";
 import Tutorial from "./PathfindingVisualiser/components/Tutorial";
+import { useSnackbar } from "notistack";
 import type { gridI, nodeI } from "./PathfindingVisualiser/grid";
 import {
   START_DEFAULT_COL_POSITION,
@@ -26,8 +27,14 @@ interface stateI {
   grid: gridI;
   speed: number;
 }
+// @ts-expect-error fix later
+const UserContext = createContext();
 
 const App = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const handleBar = (msg: string, variant: "success" | "warning" | "info") =>
+    enqueueSnackbar(msg, { variant });
+
   const [state, setState] = useState<stateI>({
     isAnimationInProgress: false,
     algoPicked: "",
@@ -144,7 +151,7 @@ const App = () => {
   };
   const showTutorial = () => setModalState(0);
   return (
-    <>
+    <UserContext.Provider value={{ handleBar }}>
       <Navbar
         showTutorial={showTutorial}
         changeHandler={setState}
@@ -168,8 +175,9 @@ const App = () => {
       />
 
       <Tutorial modalState={modalState} setModalState={setModalState} />
-    </>
+    </UserContext.Provider>
   );
 };
 export type { stateI };
 export default App;
+export { UserContext };

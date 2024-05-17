@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from "react";
+import React, { useContext } from "react";
 import Container from "react-bootstrap/Container";
+import { UserContext } from "../../App";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
@@ -54,6 +55,9 @@ const NavBar = ({
     "Clear Path": clearPath,
     "Reset Board": resetBoard,
   };
+  // @ts-expect-error fix later
+  const { handleBar } = useContext(UserContext);
+
   return (
     <Navbar className="bg-body-tertiary navbar" bg="dark" data-bs-theme="dark">
       <Container fluid>
@@ -199,9 +203,18 @@ const NavBar = ({
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                {["Reset Board", "Clear Obstacles", "Clear Path"].map((o) => (
-                  <Dropdown.Item onClick={cleanMap[o as keyof typeof cleanMap]}>
-                    {o}
+                {[
+                  { action: "Reset Board", msg: "Board Reset" },
+                  { action: "Clear Obstacles", msg: "Obstacles Cleared" },
+                  { action: "Clear Path", msg: "Path Cleared" },
+                ].map(({ action, msg }) => (
+                  <Dropdown.Item
+                    onClick={() => {
+                      cleanMap[action as keyof typeof cleanMap]();
+                      handleBar(msg, "success");
+                    }}
+                  >
+                    {action}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -217,19 +230,20 @@ const NavBar = ({
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                {Object.keys(speedMap).map((s) => {
-                  const speed = speedMap[s as keyof typeof speedMap];
+                {Object.entries(speedMap).map(([speed, value]) => {
                   return (
                     <Dropdown.Item
-                      onClick={() =>
+                      onClick={() => {
                         changeHandler((prev) => ({
                           ...prev,
-                          speed,
-                        }))
-                      }
-                      active={state.speed === speed}
+                          speed: value,
+                        }));
+                        if (state.speed !== value)
+                          handleBar(`Speed changed to ${speed}`, "default");
+                      }}
+                      active={state.speed === value}
                     >
-                      {s}
+                      {speed}
                     </Dropdown.Item>
                   );
                 })}

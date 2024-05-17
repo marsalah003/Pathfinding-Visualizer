@@ -132,42 +132,44 @@ const modals = [
   },
 ];
 
-const Tutorial = ({ modalState, setModalState }: propsI) => (
-  <>
-    {modals.map(({ title, body, img, alt }, i) => (
-      <Modal
-        show={modalState === i}
-        onHide={() => setModalState(-1)}
-        animation={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>{title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="body">
-          {body}{" "}
-          {img && (
-            <div className={title === "Add Target" ? "button-img" : "tute-img"}>
-              <img src={img} alt={alt ? alt : undefined} />
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="danger close" onClick={() => setModalState(-1)}>
-            Close Tutorial
+const Tutorial = ({ modalState, setModalState }: propsI) =>
+  modals.map(({ title, body, img, alt }, i) => (
+    <Modal
+      show={modalState === i}
+      onHide={() => setModalState(-1)}
+      animation={false}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>{title}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="body">
+        {body}{" "}
+        {img && (
+          <div className={title === "Add Target" ? "button-img" : "tute-img"}>
+            <img src={img} alt={alt ? alt : undefined} />
+          </div>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="danger close" onClick={() => setModalState(-1)}>
+          Close Tutorial
+        </Button>
+        {i !== 0 && (
+          <Button variant="secondary" onClick={() => setModalState(i - 1)}>
+            Previous
           </Button>
-          {i !== 0 && (
-            <Button variant="secondary" onClick={() => setModalState(i - 1)}>
-              Previous
-            </Button>
-          )}
-          {i !== modals.length - 1 && (
-            <Button variant="primary" onClick={() => setModalState(i + 1)}>
-              Next {i + 1}/{modals.length}
-            </Button>
-          )}
-        </Modal.Footer>
-      </Modal>
-    ))}
-  </>
-);
+        )}
+        {i !== modals.length - 1 && (
+          <Button variant="primary" onClick={() => setModalState(i + 1)}>
+            Next {i + 1}/{modals.length}
+          </Button>
+        )}
+        {i === modals.length - 1 && (
+          <Button variant="primary" onClick={() => setModalState(-1)}>
+            Finish
+          </Button>
+        )}
+      </Modal.Footer>
+    </Modal>
+  ));
 export default Tutorial;

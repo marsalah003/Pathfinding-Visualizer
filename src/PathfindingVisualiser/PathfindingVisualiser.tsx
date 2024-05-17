@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "./PathfindingVisualiser.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { UserContext } from "../App";
 import Node from "./components/Node";
 import {
   clearEverything,
@@ -26,6 +27,9 @@ const PathfindingVisualiser = ({
   changeHandler,
   getNodeWithProperty,
 }: propsI) => {
+  // @ts-expect-error fix later
+  const { handleBar } = useContext(UserContext);
+
   const [pathFinder, setPathFinder] = useState({
     mousePressedOn: "",
     buttonClicked: "",
@@ -155,7 +159,6 @@ const PathfindingVisualiser = ({
         (pos.row === startPos.row && pos.col === startPos.col) ||
         (pos.row === endPos.row && pos.col === endPos.col) ||
         (bombPos && pos.row === bombPos.row && pos.col === bombPos.col)
-        // grid[pos.row][pos.col].isWeighted
       )
         return;
 
@@ -272,8 +275,6 @@ const PathfindingVisualiser = ({
               gridCopy = clearPath(gridCopy);
               nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
               pathToEnd = toEnd.path;
-
-              // newGrid = animateInstantly;
               break;
             default:
               break;
@@ -562,13 +563,21 @@ const PathfindingVisualiser = ({
             const pathToEnd = toEnd.path;
             const nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
             await animate(nodesVisitedToBomb, "isAnimate", state.speed);
-            await animate(
-              nodesVisitedToEnd,
-              "isAnimateSecondPath",
-              state.speed
-            );
+            if (pathToBomb.length !== 0)
+              await animate(
+                nodesVisitedToEnd,
+                "isAnimateSecondPath",
+                state.speed
+              );
+
+            if (pathToBomb.length === 0)
+              handleBar("No Path to Target Found", "warning");
+            else if (pathToEnd.length === 0)
+              handleBar("No Path to Destination Found", "warning");
+
             await animate(pathToBomb, "isOnPath", state.speed * 2);
             await animate(pathToEnd, "isOnPath", state.speed * 2);
+
             changeHandler((prev) => ({
               ...prev,
               isAnimationInProgress: false,
@@ -584,8 +593,8 @@ const PathfindingVisualiser = ({
               (getNodeWithProperty("isStart") as nodeI).pos,
               (getNodeWithProperty("isEnd") as nodeI).pos
             );
-
             await animate(nodesVisitedInOrder, "isAnimate", state.speed);
+            if (path.length === 0) handleBar("No Path Found", "warning");
             await animate(path, "isOnPath", state.speed * 2);
             changeHandler((prev) => ({
               ...prev,
