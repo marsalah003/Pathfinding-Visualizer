@@ -91,7 +91,7 @@ const NavBar = ({
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                {algos.map((a) => (
+                {algos.sort().map((a) => (
                   <Dropdown.Item as="button" name={a}>
                     {a} &nbsp;
                     {(a === "A*" || a === "Dijkstra's algorithm") && (
@@ -125,7 +125,7 @@ const NavBar = ({
               </Dropdown.Toggle>
 
               <Dropdown.Menu draggable={false}>
-                {mazes.map((o) => (
+                {mazes.sort().map((o) => (
                   <Dropdown.Item>{o}</Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -204,9 +204,9 @@ const NavBar = ({
 
               <Dropdown.Menu>
                 {[
-                  { action: "Reset Board", msg: "Board Reset" },
                   { action: "Clear Obstacles", msg: "Obstacles Cleared" },
                   { action: "Clear Path", msg: "Path Cleared" },
+                  { action: "Reset Board", msg: "Board Reset" },
                 ].map(({ action, msg }) => (
                   <Dropdown.Item
                     onClick={() => {

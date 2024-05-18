@@ -119,7 +119,9 @@ img {
   animation-fill-mode: forwards;
   animation-play-state: running;
 }
-
+.currentNode{
+  background-color: rgb(255, 254, 106) !important;
+}
 .visited {
   animation-name: visitedAnimation;
 }
@@ -131,6 +133,7 @@ img {
 }
 .onPath{
   animation-name: shortestPath;
+  animation-duration: 1s;
 }
 .wall {
   animation-name: wallAnimation;

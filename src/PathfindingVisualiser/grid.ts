@@ -10,7 +10,6 @@ interface nodeI {
   isAnimate: boolean;
   isOnPath: boolean;
   isWeighted: boolean;
-  cost: number;
   isWallPreviously: boolean;
   isBomb: boolean;
   isVisitedPreviously: boolean;
@@ -43,7 +42,6 @@ for (let row = 0; row < GRID_ROW_LENGTH; row++) {
       isAnimate: false,
       isOnPath: false,
       isWeighted: false,
-      cost: 0,
       isWallPreviously: false,
       isBomb: false,
       isVisitedPreviously: false,

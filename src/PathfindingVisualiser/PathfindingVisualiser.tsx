@@ -84,7 +84,7 @@ const PathfindingVisualiser = ({
 
   const animate = (nodes: posI[], property: string, delay: number) => {
     const promises: any[] = [];
-    nodes.forEach((n, i) => {
+    nodes.forEach((n, i) =>
       promises.push(
         new Promise((resolve) => {
           setTimeout(() => {
@@ -111,8 +111,8 @@ const PathfindingVisualiser = ({
             });
           }, delay * i);
         })
-      );
-    });
+      )
+    );
 
     return Promise.all(promises);
   };
@@ -330,13 +330,9 @@ const PathfindingVisualiser = ({
       pathFinder.mousePressedOn === ""
         ? changeSquare(squareProperty, pos)
         : changeHandler((prev) => {
-            const newArray = [];
-            for (let i = 0; i < prev.grid.length; i++) {
-              newArray[i] = prev.grid[i].slice();
-            }
             return {
               ...prev,
-              grid: newArray.map((items) =>
+              grid: prev.grid.map((items) =>
                 items.map((item) => {
                   const { row, col } = item.pos;
                   const putWall =
@@ -389,26 +385,18 @@ const PathfindingVisualiser = ({
           });
     }
   };
-  const changeSquare = (property: string, pos: posI) => {
-    changeHandler((prev) => {
-      const newArray = [];
-      for (let i = 0; i < prev.grid.length; i++) {
-        newArray[i] = prev.grid[i].slice();
-      }
-      const newGrid = newArray.map((items) =>
+  const changeSquare = (property: string, pos: posI) =>
+    changeHandler(({ grid, ...rest }) => ({
+      ...rest,
+      grid: grid.map((items) =>
         items.map((item) => {
           const { row, col } = item.pos;
           return row === pos.row && col === pos.col
             ? { ...item, [property]: !item[property as keyof nodeI] }
             : item;
         })
-      );
-      return {
-        ...prev,
-        grid: newGrid,
-      };
-    });
-  };
+      ),
+    }));
 
   const onClick = (event: React.MouseEvent<HTMLElement>, pos: posI) => {
     if (state.isAnimationFinished || !state.isAnimationInProgress) {

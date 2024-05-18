@@ -73,6 +73,7 @@ const Node = ({
     (isBomb ? " bomb" : "") +
     (isStart ? " start" : "") +
     (isEnd ? " end" : "") +
+    (isCurrentNode ? " currentNode" : "") +
     (isAnimateSecondPath ? " animateSecondPath" : "");
 
   return (
