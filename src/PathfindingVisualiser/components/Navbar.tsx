@@ -29,7 +29,7 @@ const mazes = [
   "Vertical",
   "Random Maze",
   "Random Weight Maze",
-  "Weight Recursive",
+  "Weight Recursive Division",
 ];
 const algos = [
   "Breadth-First Search",

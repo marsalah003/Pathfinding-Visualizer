@@ -77,7 +77,7 @@ const modals = [
       <ul>
         {" "}
         {algoDescriptions.map((a) => (
-          <li>
+          <li style={{ fontSize: "0.9rem" }}>
             <b> {a.name}</b> {a.isWeighted ? "weighted" : "unweighted"}: {a.des}
           </li>
         ))}

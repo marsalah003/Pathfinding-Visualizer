@@ -20,7 +20,7 @@ interface propsI {
   getNodeWithProperty: (property: string) => nodeI | null;
 }
 
-const MAZE_ANIMATION_SPEED = 10;
+const MAZE_ANIMATION_SPEED = 3;
 
 const PathfindingVisualiser = ({
   state,

@@ -83,6 +83,7 @@ const App = () => {
           isWall: false,
           isWeighted: false,
           isWallPreviously: false,
+          isWeightedPreviously: false,
         }))
       ),
     }));
