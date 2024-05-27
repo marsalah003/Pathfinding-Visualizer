@@ -75,7 +75,6 @@ const Node = ({
     (isEnd ? " end" : "") +
     (isCurrentNode ? " currentNode" : "") +
     (isAnimateSecondPath ? " animateSecondPath" : "");
-
   return (
     <div
       className={className}

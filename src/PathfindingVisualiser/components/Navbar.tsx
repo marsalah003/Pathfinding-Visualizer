@@ -92,14 +92,17 @@ const NavBar = ({
 
               <Dropdown.Menu>
                 {algos.sort().map((a) => (
-                  <Dropdown.Item as="button" name={a}>
-                    {a} &nbsp;
-                    {(a === "A*" || a === "Dijkstra's algorithm") && (
-                      <Badge pill bg="secondary">
-                        Weighted
-                      </Badge>
-                    )}
-                  </Dropdown.Item>
+                  <>
+                    {a === "Random Walk" && <Dropdown.Divider />}
+                    <Dropdown.Item as="button" name={a}>
+                      {a} &nbsp;
+                      {(a === "A*" || a === "Dijkstra's algorithm") && (
+                        <Badge pill bg="secondary">
+                          Weighted
+                        </Badge>
+                      )}
+                    </Dropdown.Item>
+                  </>
                 ))}
               </Dropdown.Menu>
             </Dropdown>
