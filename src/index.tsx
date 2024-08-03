@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <SnackbarProvider maxSnack={2}>
+  <SnackbarProvider maxSnack={1}>
     <App />
   </SnackbarProvider>
 );
