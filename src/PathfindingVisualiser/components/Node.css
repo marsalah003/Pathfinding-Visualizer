@@ -106,7 +106,7 @@ img {
 }
 
 .start, .end, .bomb {
-  cursor: pointer;
+  cursor: grab;
   -webkit-user-drag: none;
 }
 
