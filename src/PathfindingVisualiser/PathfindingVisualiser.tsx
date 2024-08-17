@@ -141,249 +141,215 @@ const PathfindingVisualiser = ({
       }));
     }
   };
-
   const onMouseEnter = (pos: posI, grid: gridI) => {
-    if (state.isAnimationFinished || !state.isAnimationInProgress) {
-      if (pathFinder.buttonClicked === "") return;
-      const squareProperty =
-        pathFinder.buttonClicked === "left" ? "isWall" : "isWeighted";
+    if (!(state.isAnimationFinished || !state.isAnimationInProgress)) return;
+    if (!pathFinder.buttonClicked) return;
+    const squareProperty =
+      pathFinder.buttonClicked === "left" ? "isWall" : "isWeighted";
 
-      let bombPos;
-      if (getNodeWithProperty("isBomb"))
-        bombPos = (getNodeWithProperty("isBomb") as nodeI).pos;
+    let bombPos;
+    if (getNodeWithProperty("isBomb"))
+      bombPos = (getNodeWithProperty("isBomb") as nodeI).pos;
 
-      const endPos = (getNodeWithProperty("isEnd") as nodeI).pos;
-      const startPos = (getNodeWithProperty("isStart") as nodeI).pos;
+    const endPos = (getNodeWithProperty("isEnd") as nodeI).pos;
+    const startPos = (getNodeWithProperty("isStart") as nodeI).pos;
 
-      if (
-        (pos.row === startPos.row && pos.col === startPos.col) ||
-        (pos.row === endPos.row && pos.col === endPos.col) ||
-        (bombPos && pos.row === bombPos.row && pos.col === bombPos.col)
-      )
-        return;
+    if (
+      (pos.row === startPos.row && pos.col === startPos.col) ||
+      (pos.row === endPos.row && pos.col === endPos.col) ||
+      (bombPos && pos.row === bombPos.row && pos.col === bombPos.col)
+    )
+      return;
 
-      if (
-        state.isAnimationFinished &&
-        (pathFinder.mousePressedOn === "start" ||
-          pathFinder.mousePressedOn === "end" ||
-          pathFinder.mousePressedOn === "bomb")
-      ) {
-        let gridCopy = grid.map((items) =>
-          items.map((item) => ({
-            ...item,
-            distance: Infinity,
-            isVisited: false,
-            previousNode: null,
-            isOnPath: false,
-            isAnimateSecondPath: false,
-            isAnimateSecondPathInstantly: false,
-            isAnimateInstantly: false,
-            isHeadOfPath: false,
-          }))
-        );
-        gridCopy[pos.row][pos.col].isWall = false;
+    if (
+      state.isAnimationFinished &&
+      ["start", "end", "bomb"].includes(pathFinder.mousePressedOn)
+    ) {
+      let gridCopy = grid.map((items) =>
+        items.map((item) => ({
+          ...item,
+          distance: Infinity,
+          isVisited: false,
+          previousNode: null,
+          isOnPath: false,
+          isAnimateSecondPath: false,
+          isAnimateSecondPathInstantly: false,
+          isAnimateInstantly: false,
+          isHeadOfPath: false,
+          isWall:
+            item.isWallPreviously &&
+            !(item.pos.row === pos.row && item.pos.col === pos.col)
+              ? true
+              : item.isWall,
+          isWeighted:
+            item.isWeightedPreviously &&
+            !(item.pos.row === pos.row && item.pos.col === pos.col)
+              ? true
+              : item.isWall,
+        }))
+      );
+      gridCopy[pos.row][pos.col].isWall = false;
 
-        const startNodePos =
-          pathFinder.mousePressedOn === "start"
+      const [startNodePos, endNodePos] = ["start", "end"].map((v) => {
+        // get position of start or end or bomb
+        const nodePos = eval(`${v}Pos`);
+        return (
+          pathFinder.mousePressedOn === v
+            ? gridCopy[pos.row][pos.col]
+            : gridCopy[nodePos.row][nodePos.col]
+        ).pos;
+      });
+
+      if (bombPos)
+        bombPos =
+          pathFinder.mousePressedOn === "bomb"
             ? gridCopy[pos.row][pos.col].pos
-            : gridCopy[startPos.row][startPos.col].pos;
-        const endNodePos =
-          pathFinder.mousePressedOn === "end"
-            ? gridCopy[pos.row][pos.col].pos
-            : gridCopy[endPos.row][endPos.col].pos;
-        if (bombPos)
-          bombPos =
-            pathFinder.mousePressedOn === "bomb"
-              ? gridCopy[pos.row][pos.col].pos
-              : gridCopy[bombPos.row][bombPos.col].pos;
+            : gridCopy[bombPos.row][bombPos.col].pos;
 
-        let newGrid: gridI = [];
-        for (let i = 0; i < state.grid.length; i++) {
-          newGrid[i] = state.grid[i].slice();
-        }
-
-        newGrid = newGrid.map((items) =>
-          items.map((item) => ({
-            ...item,
-            isAnimate: false,
-            isOnPath: false,
-            isInstantPath: false,
-            isAnimateInstantly: false,
-            isVisited: false,
-            previousNode: null,
-            totalDistance: Infinity,
-            isAnimateSecondPath: false,
-            isAnimateSecondPathInstantly: false,
-          }))
-        );
-        const pathFindingAlgo = getPathFindingAlgo(state.algoPicked);
-        let toBomb,
-          toEnd,
-          pathToBomb!: posI[],
-          pathToEnd!: posI[],
-          nodesVisitedToBomb!: posI[],
-          nodesVisitedToEnd!: posI[],
-          nodesVisitedInOrder!: posI[],
-          path!: posI[];
-        if (getNodeWithProperty("isBomb")) {
-          //@ts-expect-error fix later
-          const bombNodePos = gridCopy[bombPos.row][bombPos.col].pos;
-          switch (pathFinder.mousePressedOn) {
-            case "start":
-              toBomb = pathFindingAlgo(
-                gridCopy,
-                gridCopy[pos.row][pos.col].pos,
-                bombNodePos
-              );
-              gridCopy = clearPath(gridCopy);
-              nodesVisitedToBomb = toBomb.nodesVisitedInOrder;
-              pathToBomb = toBomb.path;
-
-              toEnd = pathFindingAlgo(gridCopy, bombNodePos, endNodePos);
-              gridCopy = clearPath(gridCopy);
-              nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
-              pathToEnd = toEnd.path;
-              break;
-            case "end":
-              toBomb = pathFindingAlgo(gridCopy, startNodePos, bombNodePos);
-              nodesVisitedToBomb = toBomb.nodesVisitedInOrder;
-              pathToBomb = toBomb.path;
-
-              gridCopy = clearPath(gridCopy);
-
-              toEnd = pathFindingAlgo(
-                gridCopy,
-                bombNodePos,
-                gridCopy[pos.row][pos.col].pos
-              );
-              gridCopy = clearPath(gridCopy);
-              nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
-              pathToEnd = toEnd.path;
-              break;
-            case "bomb":
-              toBomb = pathFindingAlgo(
-                gridCopy,
-                startNodePos,
-                gridCopy[pos.row][pos.col].pos
-              );
-              nodesVisitedToBomb = toBomb.nodesVisitedInOrder;
-              pathToBomb = toBomb.path;
-
-              gridCopy = clearPath(gridCopy);
-
-              toEnd = pathFindingAlgo(gridCopy, bombNodePos, endNodePos);
-              gridCopy = clearPath(gridCopy);
-              nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
-              pathToEnd = toEnd.path;
-              break;
-            default:
-              break;
-          }
-          newGrid = animateInstantly(
-            nodesVisitedToEnd as posI[],
-            "isAnimateSecondPathInstantly",
-            newGrid
-          );
-          newGrid = animateInstantly(
-            nodesVisitedToBomb as posI[],
-            "isAnimateInstantly",
-            newGrid
-          );
-          newGrid = animateInstantly(pathToBomb, "isInstantPath", newGrid);
-          newGrid = animateInstantly(pathToEnd, "isInstantPath", newGrid);
-          const scannedNodes =
-            nodesVisitedToBomb.length + nodesVisitedToEnd.length;
-          const pathLength = pathToBomb.length + pathToEnd.length;
-          changeHandler((prev) => ({
-            ...prev,
-            grid: newGrid,
-            scannedNodes,
-            pathLength,
-          }));
-        } else {
-          const ret = pathFindingAlgo(
-            gridCopy,
-            pathFinder.mousePressedOn === "start"
-              ? gridCopy[pos.row][pos.col].pos
-              : startNodePos,
-            pathFinder.mousePressedOn === "start"
-              ? endNodePos
-              : gridCopy[pos.row][pos.col].pos
-          );
-          path = ret.path;
-          nodesVisitedInOrder = ret.nodesVisitedInOrder;
-
-          newGrid = animateInstantly(
-            nodesVisitedInOrder,
-            "isAnimateInstantly",
-            newGrid
-          );
-          newGrid = animateInstantly(path, "isInstantPath", newGrid);
-          changeHandler((prev) => ({
-            ...prev,
-            grid: newGrid,
-            pathLength: path.length,
-            scannedNodes: nodesVisitedInOrder.length,
-          }));
-        }
+      let newGrid: gridI = [];
+      for (let i = 0; i < state.grid.length; i++) {
+        newGrid[i] = state.grid[i].slice();
       }
-      pathFinder.mousePressedOn === ""
-        ? changeSquare(squareProperty, pos)
-        : changeHandler((prev) => {
-            return {
-              ...prev,
-              grid: prev.grid.map((items) =>
-                items.map((item) => {
-                  const { row, col } = item.pos;
-                  const putWall =
-                    (item.isWallPreviously &&
-                      (pathFinder.mousePressedOn === "start"
-                        ? !item.isEnd && !item.isBomb
-                        : pathFinder.mousePressedOn === "end"
-                        ? !item.isStart && !item.isBomb
-                        : !item.isStart && !item.isEnd)) ||
-                    item.isWall;
-                  return row === pos.row && col === pos.col
-                    ? {
-                        ...item,
-                        isEnd: pathFinder.mousePressedOn === "end",
-                        isStart: pathFinder.mousePressedOn === "start",
-                        isBomb: pathFinder.mousePressedOn === "bomb",
-                        [squareProperty]: false,
-                        isWallPreviously: item.isWall,
-                        isWeightedPreviously: item.isWeighted,
-                        isWeighted: false,
-                        isWall: false,
-                      }
-                    : {
-                        ...item,
-                        isEnd:
-                          pathFinder.mousePressedOn === "end"
-                            ? false
-                            : item.isEnd,
-                        isStart:
-                          pathFinder.mousePressedOn === "start"
-                            ? false
-                            : item.isStart,
-                        isBomb:
-                          pathFinder.mousePressedOn === "bomb"
-                            ? false
-                            : item.isBomb,
-                        isWall: putWall,
-                        isWallPreviously:
-                          !item.isBomb && !item.isStart && !item.isEnd
-                            ? false
-                            : item.isWall,
 
-                        isWeighted: item.isWeightedPreviously
-                          ? true
-                          : item.isWeighted,
-                      };
-                })
-              ),
-            };
-          });
+      newGrid = newGrid.map((items) =>
+        items.map((item) => ({
+          ...item,
+          isAnimate: false,
+          isOnPath: false,
+          isInstantPath: false,
+          isAnimateInstantly: false,
+          isVisited: false,
+          previousNode: null,
+          totalDistance: Infinity,
+          isAnimateSecondPath: false,
+          isAnimateSecondPathInstantly: false,
+        }))
+      );
+
+      const pathFindingAlgo = getPathFindingAlgo(state.algoPicked);
+      let toBomb,
+        toEnd,
+        pathToBomb!: posI[],
+        pathToEnd!: posI[],
+        nodesVisitedToBomb!: posI[],
+        nodesVisitedToEnd!: posI[],
+        nodesVisitedInOrder!: posI[],
+        path!: posI[];
+
+      if (getNodeWithProperty("isBomb")) {
+        //@ts-expect-error fix later
+        const bombNodePos = gridCopy[bombPos.row][bombPos.col].pos;
+
+        // fix repetition of code :(
+        toBomb = pathFindingAlgo(gridCopy, startNodePos, bombNodePos);
+        gridCopy = clearPath(gridCopy);
+        nodesVisitedToBomb = toBomb.nodesVisitedInOrder;
+        pathToBomb = toBomb.path;
+
+        toEnd = pathFindingAlgo(gridCopy, bombNodePos, endNodePos);
+        gridCopy = clearPath(gridCopy);
+        nodesVisitedToEnd = toEnd.nodesVisitedInOrder;
+        pathToEnd = toEnd.path;
+
+        newGrid = animateInstantly(
+          nodesVisitedToEnd as posI[],
+          "isAnimateSecondPathInstantly",
+          newGrid
+        );
+        newGrid = animateInstantly(
+          nodesVisitedToBomb as posI[],
+          "isAnimateInstantly",
+          newGrid
+        );
+
+        newGrid = animateInstantly(
+          [...pathToBomb, ...pathToEnd],
+          "isInstantPath",
+          newGrid
+        );
+
+        const scannedNodes =
+          nodesVisitedToBomb.length + nodesVisitedToEnd.length;
+        const pathLength = pathToBomb.length + pathToEnd.length;
+        changeHandler((prev) => ({
+          ...prev,
+          grid: newGrid,
+          scannedNodes,
+          pathLength,
+        }));
+      } else {
+        const ret = pathFindingAlgo(gridCopy, startNodePos, endNodePos);
+        path = ret.path;
+        nodesVisitedInOrder = ret.nodesVisitedInOrder;
+
+        newGrid = animateInstantly(
+          nodesVisitedInOrder,
+          "isAnimateInstantly",
+          newGrid
+        );
+        newGrid = animateInstantly(path, "isInstantPath", newGrid);
+        changeHandler((prev) => ({
+          ...prev,
+          grid: newGrid,
+          pathLength: path.length,
+          scannedNodes: nodesVisitedInOrder.length,
+        }));
+      }
     }
+    if (!pathFinder.mousePressedOn) {
+      return changeSquare(squareProperty, pos);
+    }
+    changeHandler((prev) => {
+      return {
+        ...prev,
+        grid: prev.grid.map((items) =>
+          items.map((item) => {
+            const { row, col } = item.pos;
+            const putWall =
+              (item.isWallPreviously &&
+                (pathFinder.mousePressedOn === "start"
+                  ? !item.isEnd && !item.isBomb
+                  : pathFinder.mousePressedOn === "end"
+                  ? !item.isStart && !item.isBomb
+                  : !item.isStart && !item.isEnd)) ||
+              item.isWall;
+
+            return row === pos.row && col === pos.col
+              ? {
+                  ...item,
+                  isEnd: pathFinder.mousePressedOn === "end",
+                  isStart: pathFinder.mousePressedOn === "start",
+                  isBomb: pathFinder.mousePressedOn === "bomb",
+                  [squareProperty]: false,
+                  isWallPreviously: item.isWall,
+                  isWeightedPreviously: item.isWeighted,
+                  isWeighted: false,
+                  isWall: false,
+                }
+              : {
+                  ...item,
+                  isEnd:
+                    pathFinder.mousePressedOn === "end" ? false : item.isEnd,
+                  isStart:
+                    pathFinder.mousePressedOn === "start"
+                      ? false
+                      : item.isStart,
+                  isBomb:
+                    pathFinder.mousePressedOn === "bomb" ? false : item.isBomb,
+                  isWall: putWall,
+                  isWallPreviously:
+                    !item.isBomb && !item.isStart && !item.isEnd
+                      ? false
+                      : item.isWall,
+
+                  isWeighted: item.isWeightedPreviously
+                    ? true
+                    : item.isWeighted,
+                };
+          })
+        ),
+      };
+    });
   };
   const changeSquare = (property: string, pos: posI) =>
     changeHandler(({ grid, ...rest }) => ({
@@ -576,11 +542,15 @@ const PathfindingVisualiser = ({
               pathLength: pathToBomb.length + pathToEnd.length,
             }));
           } else {
+            // tried to get the time to compute value for algo, however its always either 0 or 1 miliseconds
+            // so I'm not sure what I'm wrong or if the algo is just very fast for a grid of this size
+
             const { path, nodesVisitedInOrder } = stateAlgo(
               state.grid,
               (getNodeWithProperty("isStart") as nodeI).pos,
               (getNodeWithProperty("isEnd") as nodeI).pos
             );
+
             await animate(nodesVisitedInOrder, "isAnimate", state.speed);
             if (path.length === 0) handleBar("No Path Found", "warning");
             await animate(path, "isOnPath", state.speed * 2);
@@ -607,29 +577,15 @@ const PathfindingVisualiser = ({
     <div key={rowId} className="grid-row">
       {row.map((node, nodeId) => (
         <Node
-          isVisitedPreviously={node.isVisitedPreviously}
-          key={nodeId}
-          isAnimateSecondPath={node.isAnimateSecondPath}
-          isBomb={node.isBomb}
-          pos={node.pos}
-          isWall={node.isWall}
-          isStart={node.isStart}
-          isWeighted={node.isWeighted}
-          isEnd={node.isEnd}
-          isVisited={node.isVisited}
-          isAnimate={node.isAnimate}
-          isOnPath={node.isOnPath}
-          onClick={onClick}
-          onMouseDown={onMouseDown}
-          onMouseEnter={onMouseEnter}
-          onMouseUp={onMouseUp}
-          grid={state.grid}
-          isCurrentNode={node.isCurrentNode}
-          isHeadOfPath={node.isHeadOfPath}
-          isInstantPath={node.isInstantPath}
-          isYellowPath={node.isYellowPath}
-          isAnimateInstantly={node.isAnimateInstantly}
-          isAnimateSecondPathInstantly={node.isAnimateSecondPathInstantly}
+          {...{
+            onClick,
+            onMouseDown,
+            onMouseEnter,
+            onMouseUp,
+            key: nodeId,
+            grid: state.grid,
+            ...node,
+          }}
         ></Node>
       ))}
     </div>

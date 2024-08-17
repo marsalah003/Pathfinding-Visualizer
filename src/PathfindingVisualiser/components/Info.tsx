@@ -11,7 +11,6 @@ const Info = ({ algorithmType, scannedNodes, pathLength }: props) => {
     { name: "Algorithm of choice", dep: algorithmType },
     { name: "Scanned Nodes", dep: scannedNodes },
     { name: "Shortest Path Length", dep: pathLength },
-    { name: "Time Taken to Compute" },
   ];
   return (
     <div className="info">
