@@ -176,6 +176,7 @@ const PathfindingVisualiser = ({
           isAnimateSecondPathInstantly: false,
           isAnimateInstantly: false,
           isHeadOfPath: false,
+          // deals with isWallPreviously and isWeightPreviously issues
           isWall:
             item.isWallPreviously &&
             !(item.pos.row === pos.row && item.pos.col === pos.col)

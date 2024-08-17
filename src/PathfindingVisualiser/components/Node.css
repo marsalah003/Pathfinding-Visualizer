@@ -132,7 +132,7 @@ img {
   animation-name: secondVisitedAnimation;
 }
 .visited, .animateSecondPath{
-  animation-duration: 1s
+  animation-duration: 2s
 }
 .onPath{
   animation-name: shortestPath;
